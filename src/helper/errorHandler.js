@@ -15,6 +15,9 @@ const notFoundError = (req, res, next) => {
 const defaultErrorHandler = (err, req, res, next) => {
   const message = err.message ? err.message : "Server Error Occured";
   const status = err.status ? err.status : 500;
+
+  console.log(err);
+
   res.status(status).json({
     message,
     stack: err.stack,

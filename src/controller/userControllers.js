@@ -16,20 +16,15 @@ const { createError } = require("../helper/errorHandler");
  * @methud GET
  */
 
-const selectUser = async (req, res) => {
-  const { userName } = req;
-
+const selectUsers = async (req, res) => {
   try {
-    const user = await UserModel.aggregate([
-      { $match: { userName } },
-      { $project: { password: 0 } },
-    ]);
+    const users = await UserModel.aggregate([{ $project: { password: 0 } }]);
 
-    if (!user.length > 0) {
+    if (!users.length > 0) {
       throw createError("User Not Found", 404);
     }
 
-    res.json(user);
+    res.json(users);
   } catch (e) {
     throw createError(e.message, e.status);
   }
@@ -42,7 +37,7 @@ const selectUser = async (req, res) => {
  * @methud GET
  */
 
-const selectUserByUserName = async (req, res) => {
+const selectUserProfile = async (req, res) => {
   const { userName } = req.params;
 
   try {
@@ -111,9 +106,99 @@ const deleteUser = async (req, res) => {
   }
 };
 
+/**
+ * @desc Following User
+ * @access private
+ * @route /api/v1/user/followingUser
+ * @methud PATCH
+ */
+
+const followingUser = async (req, res) => {
+  const userId = req.id;
+  const followingId = req.body.followingId;
+
+  try {
+    const axitfollowingId = await UserModel.aggregate([
+      { $match: { _id: ObjectId(followingId) } },
+    ]);
+
+    if (!axitfollowingId.length > 0) {
+      throw createError("Following User Not Found", 404);
+    }
+
+    const allreadyFollow = await UserModel.aggregate([
+      { $match: { following: ObjectId(followingId) } },
+    ]);
+
+    if (allreadyFollow.length > 0) {
+      throw createError("Allready Following This User", 400);
+    }
+
+    await UserModel.findByIdAndUpdate(userId, {
+      $push: {
+        following: followingId,
+      },
+    });
+
+    await UserModel.findByIdAndUpdate(followingId, {
+      $push: {
+        followes: userId,
+      },
+    });
+
+    res.json({
+      message: "You Have Successfull Following This User",
+    });
+  } catch (e) {
+    throw createError(e.message, e.status);
+  }
+};
+
+/**
+ * @desc Un Following User
+ * @access private
+ * @route /api/v1/user/UnFollowing
+ * @methud PATCH
+ */
+
+const unFollowingUser = async (req, res) => {
+  const userId = req.id;
+  const unFollowingId = req.body.unFollowingId;
+
+  try {
+    const allreadyFollow = await UserModel.aggregate([
+      { $match: { following: { $in: [ObjectId(unFollowingId)] } } },
+    ]);
+
+    if (!allreadyFollow.length > 0) {
+      throw createError("Un Following User Not Found", 404);
+    }
+
+    await UserModel.findByIdAndUpdate(userId, {
+      $pull: {
+        following: unFollowingId,
+      },
+    });
+
+    await UserModel.findByIdAndUpdate(unFollowingId, {
+      $pull: {
+        followes: userId,
+      },
+    });
+
+    res.json({
+      message: "You Have Successfull Un Following This User",
+    });
+  } catch (e) {
+    throw createError(e.message, e.status);
+  }
+};
+
 module.exports = {
-  selectUser,
-  selectUserByUserName,
+  selectUsers,
+  selectUserProfile,
   updateUser,
   deleteUser,
+  followingUser,
+  unFollowingUser,
 };

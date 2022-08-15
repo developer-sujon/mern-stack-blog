@@ -52,6 +52,50 @@ const userSchema = new Schema(
       default: "PENDING",
       required: true,
     },
+    postCount: {
+      type: Number,
+      default: 0,
+    },
+    isFollowing: {
+      type: Boolean,
+      default: false,
+    },
+    isUnFollowing: {
+      type: Boolean,
+      default: false,
+    },
+    accountVerificationToken: String,
+    accountVerificationTokenExpire: Date,
+    viewBy: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+          unique: true,
+        },
+      ],
+    },
+    followes: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+          unique: true,
+        },
+      ],
+    },
+    following: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+          unique: true,
+        },
+      ],
+    },
+    passwordResetToken: String,
+    passwordChangeAt: Date,
+    passwordResetTokenExpire: Date,
     avatar: {
       type: String,
       default:

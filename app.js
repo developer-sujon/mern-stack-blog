@@ -56,7 +56,7 @@ const MONGODB_CONNECTION_URL = process.env.MONGODB_CONNECTION_URL;
 const DB_OPTIONS = {
   user: process.env.MONGODB_DATABASE_USERNAME,
   pass: process.env.MONGODB_DATABASE_PASSWORD,
-  dbName: "mern-blog",
+  dbName: process.env.MONGODB_DATABASE_NAME,
   autoIndex: true,
 };
 
@@ -92,5 +92,6 @@ app.use(notFoundError);
 
 // Default Error Handler
 app.use(defaultErrorHandler);
+console.log(4564565);
 
 module.exports = app;

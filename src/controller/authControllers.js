@@ -1,12 +1,11 @@
 //external import
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
-const { body, validationResult } = require("express-validator");
 
 //internal import
 const UserModel = require("../model/UserModel");
 const { createError } = require("../helper/errorHandler");
+const generateToken = require("../helper/generateToken");
 
 /**
  * @desc Register User
@@ -17,10 +16,6 @@ const { createError } = require("../helper/errorHandler");
 
 const registrationUser = async (req, res) => {
   const { name, userName, email, password, phone } = req.body;
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json(errors.array());
-  }
 
   const newUser = UserModel({
     name,
@@ -88,9 +83,7 @@ const loginUser = async (req, res) => {
       userName: exitUser[0].userName,
     };
 
-    const token = await jwt.sign(payLoad, process.env.JWT_SECRET_KEY, {
-      expiresIn: "24h",
-    });
+    const token = await generateToken(payLoad);
 
     res.json({ accessToken: token });
   } catch (e) {

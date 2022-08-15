@@ -5,10 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node index",
-    "server": "nodemon index",
-    "client": "npm start --prefix client",
-    "clientinit": "yarn install --prefix client",
-    "dev": "concurrently \"yarn server\" \"yarn client\""
+    "dev": "nodemon index"
   },
   "author": "developer-sujon",
   "dependencies": {
