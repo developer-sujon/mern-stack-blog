@@ -1,6 +1,6 @@
 //external import
-const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 //internal import
 const UserModel = require("../model/UserModel");
@@ -43,6 +43,7 @@ const registrationUser = async (req, res) => {
     newUser.password = hash;
 
     const user = await newUser.save();
+
     delete user._doc.password;
 
     res.status(201).json(user);
@@ -81,6 +82,8 @@ const loginUser = async (req, res) => {
     const payLoad = {
       id: exitUser[0]._id,
       userName: exitUser[0].userName,
+      roles: exitUser[0].roles,
+      email: exitUser[0].email,
     };
 
     const token = await generateToken(payLoad);

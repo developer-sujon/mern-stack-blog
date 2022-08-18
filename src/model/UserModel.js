@@ -19,6 +19,13 @@ const userSchema = new Schema(
       },
       unique: true,
     },
+    userId: {
+      type: String,
+      default: function () {
+        return Math.round(Date.now() / 1000);
+      },
+      required: true,
+    },
     userName: {
       type: String,
       required: true,
@@ -37,7 +44,7 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      minlength: [6, "ppassword is too short"],
+      minlength: [6, "Password is too short"],
       required: true,
     },
     roles: {
@@ -56,16 +63,6 @@ const userSchema = new Schema(
       type: Number,
       default: 0,
     },
-    isFollowing: {
-      type: Boolean,
-      default: false,
-    },
-    isUnFollowing: {
-      type: Boolean,
-      default: false,
-    },
-    accountVerificationToken: String,
-    accountVerificationTokenExpire: Date,
     viewBy: {
       type: [
         {
@@ -93,16 +90,13 @@ const userSchema = new Schema(
         },
       ],
     },
-    passwordResetToken: String,
-    passwordChangeAt: Date,
-    passwordResetTokenExpire: Date,
     avatar: {
       type: String,
       default:
         "https://firebasestorage.googleapis.com/v0/b/portfolio-66931.appspot.com/o/client-3.png?alt=media&token=4f615887-cbda-49c9-b279-194fe7b7a802",
     },
   },
-  { versionKey: false, timeseries: true },
+  { versionKey: false, timestamps: true },
 );
 
 const UserModel = model("User", userSchema);

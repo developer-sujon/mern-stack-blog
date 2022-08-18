@@ -17,10 +17,10 @@ const sendMailUtility = async (emailTo, emailText, emailSubject) => {
   });
 
   const mailOption = {
-    from: "Task Management App <contact@sujon.one>", // sender address
+    from: `${process.env.APPLICATION_NAME} <contact@sujon.one>`, // sender address
     to: emailTo, // list of receivers
     subject: emailSubject, // Subject line
-    text: emailText, // plain text body
+    html: emailText, // plain text body
   };
 
   return await transporter.sendMail(mailOption);

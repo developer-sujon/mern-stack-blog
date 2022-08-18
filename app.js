@@ -64,10 +64,8 @@ const DB_OPTIONS = {
 connectDB(MONGODB_CONNECTION_URL, DB_OPTIONS);
 
 //static file
-app.use(express.static("client/build"));
-
-//multer fiile upload middleware
-const upload = multer({ dest: "uploads/" }).single("demo_image");
+app.use(express.static("public"));
+// app.use(express.static("client/build"));
 
 app.post("/api/v1/upload", (req, res) => {
   upload(req, res, (err) => {
@@ -80,11 +78,10 @@ app.post("/api/v1/upload", (req, res) => {
 
 // Routing Implement
 app.use("/api/v1", routes);
-app.use("/images", express.static(path.join(__dirname, "/uploads")));
 
 // Add React Front End Routing
 app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "client", "build", "uploads"));
+  res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
 });
 
 //Not Found Error Handler
@@ -92,6 +89,5 @@ app.use(notFoundError);
 
 // Default Error Handler
 app.use(defaultErrorHandler);
-console.log(4564565);
 
 module.exports = app;
