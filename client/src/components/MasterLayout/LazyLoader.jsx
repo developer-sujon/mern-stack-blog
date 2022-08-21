@@ -1,8 +1,8 @@
 const LazyLoader = () => {
   return (
-    <div className="loading">
-      <div className="loading__line__progress">
-        <div className="loading__line__progress__indeterminate"></div>
+    <div className="LoadingOverlay">
+      <div className="Line-Progress">
+        <div className="indeterminate"></div>
       </div>
     </div>
   );

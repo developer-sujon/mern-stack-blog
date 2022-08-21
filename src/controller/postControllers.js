@@ -16,7 +16,7 @@ const UserModel = require("../model/UserModel");
  */
 
 const createPost = async (req, res) => {
-  let { title, description, categoryId, tagId } = req.body;
+  let { title, description, categoryId, tagsId } = req.body;
 
   if (!title) {
     throw createError("Title Is Required", 400);
@@ -25,18 +25,18 @@ const createPost = async (req, res) => {
   const filter = new Filter();
   const isProfane = filter.isProfane(title, description);
 
-  if (tagId) {
-    tagId = tagId.split(" ");
+  if (tagsId) {
+    tagsId = tagsId.split(" ");
   } else {
-    tagId = [];
+    tagsId = [];
   }
 
   const newPost = new PostModel({
     title,
     description: req?.body?.description,
     categoryId,
-    tagId,
-    user: req.userName,
+    tagsId,
+    userId: req.id,
     postThumbnail: req?.file?.postThumbnail,
     slug: req.body.title.toLowerCase().split(" ").join("-"),
   });
@@ -73,33 +73,57 @@ const selectAllPost = async (req, res) => {
       {
         $lookup: {
           from: "users",
-          localField: "user",
-          foreignField: "userName",
-          as: "user",
+          localField: "likes",
+          foreignField: "_id",
+          as: "likes",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "disLikes",
+          foreignField: "_id",
+          as: "disLikes",
         },
       },
       {
         $lookup: {
           from: "categories",
           localField: "categoryId",
-          foreignField: "categoryId",
-          as: "categories",
+          foreignField: "_id",
+          as: "category",
         },
       },
       {
         $lookup: {
           from: "tags",
-          localField: "tagId",
-          foreignField: "tagId",
+          localField: "tagsId",
+          foreignField: "_id",
           as: "tags",
         },
       },
       {
         $lookup: {
           from: "users",
-          localField: "likeId",
+          localField: "userId",
           foreignField: "_id",
-          as: "likes",
+          as: "user",
+        },
+      },
+      {
+        $project: {
+          title: 1,
+          postThumbnail: 1,
+          slug: 1,
+          description: 1,
+          likes: { userName: 1 },
+          disLikes: { userName: 1 },
+          tags: { name: 1, _id: 1 },
+          category: { $first: "$category.name" },
+          isLike: 1,
+          isDisLike: 1,
+          numView: 1,
+          userName: { $first: "$user.userName" },
         },
       },
     ]);
@@ -145,33 +169,57 @@ const selectPostBySlug = async (req, res) => {
       {
         $lookup: {
           from: "users",
-          localField: "likeId",
-          foreignField: "userId",
-          as: "likeId",
+          localField: "likes",
+          foreignField: "_id",
+          as: "likes",
         },
       },
       {
         $lookup: {
           from: "users",
-          localField: "disLikeId",
-          foreignField: "userId",
-          as: "disLikeId",
-        },
-      },
-      {
-        $lookup: {
-          from: "tags",
-          localField: "tagId",
-          foreignField: "tagId",
-          as: "tagId",
+          localField: "disLikes",
+          foreignField: "_id",
+          as: "disLikes",
         },
       },
       {
         $lookup: {
           from: "categories",
           localField: "categoryId",
-          foreignField: "categoryId",
-          as: "categoryId",
+          foreignField: "_id",
+          as: "category",
+        },
+      },
+      {
+        $lookup: {
+          from: "tags",
+          localField: "tagsId",
+          foreignField: "_id",
+          as: "tags",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $project: {
+          title: 1,
+          postThumbnail: 1,
+          slug: 1,
+          description: 1,
+          likes: { userName: 1 },
+          disLikes: { userName: 1 },
+          tags: { name: 1, _id: 1 },
+          category: { $first: "$category.name" },
+          isLike: 1,
+          isDisLike: 1,
+          numView: 1,
+          userName: { $first: "$user.userName" },
         },
       },
     ]);
@@ -191,7 +239,7 @@ const selectPostBySlug = async (req, res) => {
 
 const updatePost = async (req, res) => {
   const { id } = req.params;
-  let { title, description, tagId } = req.body;
+  let { title, description, tagsId, categoryId } = req.body;
 
   if (!title) {
     throw createError("Title Is Required", 400);
@@ -200,10 +248,10 @@ const updatePost = async (req, res) => {
   const filter = new Filter();
   const isProfane = filter.isProfane(title, description);
 
-  if (tagId) {
-    tagId = tagId.split(" ");
+  if (tagsId) {
+    tagsId = tagsId.split(" ");
   } else {
-    tagId = [];
+    tagsId = [];
   }
 
   try {
@@ -229,7 +277,7 @@ const updatePost = async (req, res) => {
 
     await PostModel.findByIdAndUpdate(id, {
       ...req.body,
-      user: req.userName,
+      userId: req.id,
       postThumbnail: req?.file?.postThumbnail,
       slug: req.body.title.toLowerCase().split(" ").join("-"),
     });
@@ -274,7 +322,7 @@ const deletePost = async (req, res) => {
 
 const likePost = async (req, res) => {
   const { id } = req.params;
-  const loginUserId = req.userId;
+  const loginUserId = req.id;
   try {
     let post = await PostModel.aggregate([{ $match: { _id: ObjectId(id) } }]);
 
@@ -282,10 +330,10 @@ const likePost = async (req, res) => {
       throw createError("Post Not Found", 404);
     }
 
-    const alreadylike = post[0]?.likeId.find(
+    const alreadylike = post[0]?.likes.find(
       (userId) => userId.toString() === loginUserId.toString(),
     );
-    const alreadyDislike = post[0]?.disLikeId.find(
+    const alreadyDislike = post[0]?.disLikes.find(
       (userId) => userId.toString() === loginUserId.toString(),
     );
 
@@ -293,7 +341,7 @@ const likePost = async (req, res) => {
       post = await PostModel.findByIdAndUpdate(
         id,
         {
-          $pull: { disLikeId: loginUserId },
+          $pull: { disLikes: loginUserId },
           isDisLike: false,
         },
         { new: true },
@@ -306,7 +354,7 @@ const likePost = async (req, res) => {
       post = await PostModel.findByIdAndUpdate(
         id,
         {
-          $pull: { likeId: loginUserId },
+          $pull: { likes: loginUserId },
           isLike: false,
         },
         { new: true },
@@ -316,7 +364,7 @@ const likePost = async (req, res) => {
       post = await PostModel.findByIdAndUpdate(
         id,
         {
-          $push: { likeId: loginUserId },
+          $push: { likes: loginUserId },
           isLike: true,
         },
         { new: true },
@@ -337,7 +385,7 @@ const likePost = async (req, res) => {
 
 const disLikePost = async (req, res) => {
   const { id } = req.params;
-  const loginUserId = req.userId;
+  const loginUserId = req.id;
   try {
     let post = await PostModel.aggregate([{ $match: { _id: ObjectId(id) } }]);
 
@@ -345,10 +393,10 @@ const disLikePost = async (req, res) => {
       throw createError("Post Not Found", 404);
     }
 
-    const alreadylike = post[0]?.likeId.find(
+    const alreadylike = post[0]?.likes.find(
       (userId) => userId.toString() === loginUserId.toString(),
     );
-    const alreadyDislike = post[0]?.disLikeId.find(
+    const alreadyDislike = post[0]?.disLikes.find(
       (userId) => userId.toString() === loginUserId.toString(),
     );
 
@@ -356,7 +404,7 @@ const disLikePost = async (req, res) => {
       post = await PostModel.findByIdAndUpdate(
         id,
         {
-          $pull: { likeId: loginUserId },
+          $pull: { likes: loginUserId },
           isLike: false,
         },
         { new: true },
@@ -369,7 +417,7 @@ const disLikePost = async (req, res) => {
       post = await PostModel.findByIdAndUpdate(
         id,
         {
-          $pull: { disLikeId: loginUserId },
+          $pull: { disLikes: loginUserId },
           isDisLike: false,
         },
         { new: true },
@@ -379,7 +427,7 @@ const disLikePost = async (req, res) => {
       post = await PostModel.findByIdAndUpdate(
         id,
         {
-          $push: { disLikeId: loginUserId },
+          $push: { disLikes: loginUserId },
           isDisLike: true,
         },
         { new: true },

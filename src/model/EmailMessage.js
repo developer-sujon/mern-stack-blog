@@ -23,8 +23,9 @@ const emailMessageSchema = new Schema(
       type: Boolean,
       default: true,
     },
-    user: {
-      type: String,
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
   },

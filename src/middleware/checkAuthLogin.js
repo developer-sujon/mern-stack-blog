@@ -71,7 +71,6 @@ const userAuth = async (req, res, next) => {
     }
 
     req.id = user[0]._id;
-    req.userId = user[0].userId;
     req.userName = user[0].userName;
     req.email = user[0].email;
 

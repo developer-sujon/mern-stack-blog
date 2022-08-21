@@ -14,15 +14,16 @@ const CommentModel = require("../model/CommentModel");
 
 const createComment = async (req, res) => {
   let { description, postId } = req.body;
-  let { userName } = req;
+  let userId = req.id;
 
   if (!description) {
     throw createError("Comment Description Is Required", 400);
   }
 
   const newComment = new CommentModel({
+    postId,
     description,
-    user: userName,
+    userId,
   });
 
   try {
@@ -47,6 +48,7 @@ const selectAllComment = async (req, res) => {
       {
         $project: {
           description: 1,
+          postId: 1,
         },
       },
     ]);
@@ -72,6 +74,7 @@ const selectComment = async (req, res) => {
       {
         $project: {
           description: 1,
+          postId: 1,
         },
       },
     ]);
@@ -92,20 +95,22 @@ const selectComment = async (req, res) => {
 const updateComment = async (req, res) => {
   const { id } = req.params;
   let { description, postId } = req.body;
-  const { userName } = req;
+  let userId = req.id;
 
   try {
     const comment = await CommentModel.aggregate([
-      { $match: { _id: ObjectId(id) } },
+      { $match: { _id: ObjectId(id), postId: postId } },
     ]);
 
     if (!comment.length > 0) {
       throw createError("Comment Not Found", 404);
     }
 
+    return false;
+
     await CommentModel.findByIdAndUpdate(id, {
       description,
-      user: userName,
+      userId,
     });
 
     res.json({ message: "Comment Update Successfull" });
@@ -140,10 +145,37 @@ const deleteComment = async (req, res) => {
   }
 };
 
+/**
+ * @desc Select Comment By Post
+ * @access private
+ * @route /api/v1/comment/selectCommentByPost/:postId
+ * @methud GET
+ */
+
+const selectCommentByPost = async (req, res) => {
+  const { postId } = req.params;
+  try {
+    let comment = await CommentModel.aggregate([
+      { $match: { postId: ObjectId(postId) } },
+      {
+        $project: {
+          description: 1,
+          postId: 1,
+        },
+      },
+    ]);
+
+    res.json(comment);
+  } catch (e) {
+    throw createError(e.message, e.status);
+  }
+};
+
 module.exports = {
   createComment,
   selectAllComment,
   selectComment,
   updateComment,
   deleteComment,
+  selectCommentByPost,
 };

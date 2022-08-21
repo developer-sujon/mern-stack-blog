@@ -14,7 +14,7 @@ const TagModel = require("../model/TagModel");
 
 const createTag = async (req, res) => {
   let { name } = req.body;
-  let { userName } = req;
+  let userId = req.id;
 
   if (!name) {
     throw createError("Tag Name Is Required", 400);
@@ -22,7 +22,7 @@ const createTag = async (req, res) => {
 
   const newTag = new TagModel({
     name: name.toLowerCase(),
-    user: userName,
+    userId,
   });
 
   try {
@@ -94,7 +94,8 @@ const selectTag = async (req, res) => {
 const updateTag = async (req, res) => {
   const { id } = req.params;
   const { name } = req.body;
-  const { userName } = req;
+  let userId = req.id;
+
   try {
     const tag = await TagModel.aggregate([{ $match: { _id: ObjectId(id) } }]);
 
@@ -104,7 +105,7 @@ const updateTag = async (req, res) => {
 
     await TagModel.findByIdAndUpdate(id, {
       name: name.toLowerCase(),
-      user: userName,
+      userId,
     });
 
     res.json({ message: "Tag Update Successfull" });

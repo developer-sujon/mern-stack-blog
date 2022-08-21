@@ -8,15 +8,9 @@ const tagSchema = new Schema(
       required: true,
       unique: true,
     },
-    tagId: {
-      type: String,
-      default: function () {
-        return Math.round(Date.now() / 1000);
-      },
-      required: true,
-    },
-    user: {
-      type: String,
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
   },

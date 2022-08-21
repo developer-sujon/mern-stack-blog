@@ -9,13 +9,6 @@ const postSchema = new Schema(
       unique: true,
       trim: true,
     },
-    postId: {
-      type: String,
-      default: function () {
-        return Math.round(Date.now() / 1000);
-      },
-      required: true,
-    },
     postThumbnail: {
       type: String,
       default: "/uploads/images/posts/post.jpg",
@@ -26,15 +19,36 @@ const postSchema = new Schema(
       trim: true,
     },
     description: String,
-    likeId: [String],
-    disLikeId: [String],
-    commentId: [String],
+    likes: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        },
+      ],
+    },
+    disLikes: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        },
+      ],
+    },
     categoryId: {
-      type: String,
-      default: "1660846768",
+      type: Schema.Types.ObjectId,
+      ref: "Category",
+      default: "630059266048e37265560aa0",
       required: true,
     },
-    tagId: [String],
+    tagsId: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Tag",
+        },
+      ],
+    },
     isLike: {
       type: Boolean,
       default: false,
@@ -47,8 +61,9 @@ const postSchema = new Schema(
       type: Number,
       default: 0,
     },
-    user: {
-      type: String,
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
   },

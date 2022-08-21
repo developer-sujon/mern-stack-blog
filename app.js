@@ -65,6 +65,7 @@ connectDB(MONGODB_CONNECTION_URL, DB_OPTIONS);
 
 //static file
 app.use(express.static("public"));
+
 // app.use(express.static("client/build"));
 
 app.post("/api/v1/upload", (req, res) => {

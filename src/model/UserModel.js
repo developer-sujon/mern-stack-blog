@@ -19,13 +19,6 @@ const userSchema = new Schema(
       },
       unique: true,
     },
-    userId: {
-      type: String,
-      default: function () {
-        return Math.round(Date.now() / 1000);
-      },
-      required: true,
-    },
     userName: {
       type: String,
       required: true,
@@ -68,7 +61,6 @@ const userSchema = new Schema(
         {
           type: Schema.Types.ObjectId,
           ref: "User",
-          unique: true,
         },
       ],
     },
@@ -77,7 +69,6 @@ const userSchema = new Schema(
         {
           type: Schema.Types.ObjectId,
           ref: "User",
-          unique: true,
         },
       ],
     },
@@ -86,7 +77,6 @@ const userSchema = new Schema(
         {
           type: Schema.Types.ObjectId,
           ref: "User",
-          unique: true,
         },
       ],
     },

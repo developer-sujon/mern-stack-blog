@@ -9,6 +9,7 @@ const {
   selectComment,
   updateComment,
   deleteComment,
+  selectCommentByPost,
 } = require("../controller/commentControllers");
 
 //Create Comment
@@ -25,5 +26,12 @@ commentRoutes.patch("/updateComment/:id", userAuth, updateComment);
 
 //Delete Comment
 commentRoutes.delete("/deleteComment/:id", userAuth, deleteComment);
+
+//Select Comment By Post
+commentRoutes.get(
+  "/selectCommentByPost/:postId",
+  userAuth,
+  selectCommentByPost,
+);
 
 module.exports = commentRoutes;

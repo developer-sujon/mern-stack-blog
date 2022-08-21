@@ -14,7 +14,7 @@ const CategoryModel = require("../model/CategoryMode");
 
 const createCategory = async (req, res) => {
   let { name } = req.body;
-  let { userName } = req;
+  let userId = req.id;
 
   if (!name) {
     throw createError("Category Name Is Required", 400);
@@ -22,7 +22,7 @@ const createCategory = async (req, res) => {
 
   const newCategory = new CategoryModel({
     name: name.toLowerCase(),
-    user: userName,
+    userId,
   });
 
   try {
@@ -92,7 +92,7 @@ const selectCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
   const { id } = req.params;
   const { name } = req.body;
-  const { userName } = req;
+  const { userId } = req;
   try {
     const category = await CategoryModel.aggregate([
       { $match: { _id: ObjectId(id) } },
@@ -104,7 +104,7 @@ const updateCategory = async (req, res) => {
 
     await CategoryModel.findByIdAndUpdate(id, {
       name: name.toLowerCase(),
-      user: userName,
+      userId,
     });
 
     res.json({ message: "Category Update Successfull" });

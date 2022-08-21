@@ -16,7 +16,7 @@ const EmailMessageModel = require("../model/EmailMessage");
 
 const sendEmailMessage = async (req, res) => {
   let { to, message, subject } = req.body;
-  let { userName, email } = req;
+  let { id, email } = req;
 
   if (!to || !message || !subject) {
     throw createError("All Feilds Is Required", 400);
@@ -37,7 +37,7 @@ const sendEmailMessage = async (req, res) => {
     to,
     message,
     subject,
-    user: userName,
+    userId: id,
   });
 
   try {

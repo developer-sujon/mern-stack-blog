@@ -3,19 +3,18 @@ const { model, Schema } = require("mongoose");
 
 const commentSchema = new Schema(
   {
+    postId: {
+      type: Schema.Types.ObjectId,
+      ref: "Post",
+      required: true,
+    },
     description: {
       type: String,
       required: true,
     },
-    commentId: {
-      type: String,
-      default: function () {
-        return Math.round(Date.now() / 1000);
-      },
-      required: true,
-    },
-    user: {
-      type: String,
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
   },

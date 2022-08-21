@@ -1,9 +1,7 @@
 //external lib imports
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import FullScreenLoader from "./components/MasterLayout/FullScreenLoader";
-import PrivateOutlet from "./components/Private/PrivateOutlet";
 import SessionHelper from "./helper/SessionHelper";
-import CreatePostPage from "./pages/CreatePostPage/CreatePostPage";
 import HomePage from "./pages/HomePage/HomePage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
@@ -25,12 +23,8 @@ const App = () => {
             path="/registration"
             element={accessToken ? <Navigate to="/" /> : <RegistrationPage />}
           />
-          <Route path="/*" element={<PrivateOutlet />}>
-            <Route path="" element={<HomePage />} />
-            <Route path="create-post" element={<CreatePostPage />} />
-            <Route path="dashboard" element={<HomePage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Route>
+          <Route path="/" element={<HomePage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
       <FullScreenLoader />
