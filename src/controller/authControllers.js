@@ -88,7 +88,7 @@ const loginUser = async (req, res) => {
 
     const token = await generateToken(payLoad);
 
-    res.json({ accessToken: token });
+    res.json({ accessToken: token, roles: exitUser[0].roles[0] });
   } catch (e) {
     throw createError(e.message, e.status);
   }

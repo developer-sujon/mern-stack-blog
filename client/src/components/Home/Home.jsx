@@ -1,5 +1,8 @@
+//external lib imports
 import React from "react";
 import { NavLink } from "react-router-dom";
+
+//enternel lib imports
 import poster from "../../assets/images/poster.png";
 const Home = () => {
   return (

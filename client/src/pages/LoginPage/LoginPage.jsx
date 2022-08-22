@@ -1,11 +1,11 @@
 import React, { Suspense, lazy } from "react";
 
 //Internal Lib Import
-import AppNavigation from "../../partials/AppNavigation";
 import LazyLoader from "../../components/MasterLayout/LazyLoader";
-
 const LoginUser = lazy(() => import("../../components/LoginUser/LoginUser"));
-
+const AppNavigation = lazy(() =>
+  import("../../components/Navigation/AppNavigation"),
+);
 const LoginPage = () => {
   return (
     <Suspense fallback={<LazyLoader />}>

@@ -1,6 +1,6 @@
 //external lib imports
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import FullScreenLoader from "./components/MasterLayout/FullScreenLoader";
+// import FullScreenLoader from "./components/MasterLayout/FullScreenLoader";
 import SessionHelper from "./helper/SessionHelper";
 import HomePage from "./pages/HomePage/HomePage";
 import LoginPage from "./pages/LoginPage/LoginPage";
@@ -9,7 +9,7 @@ import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
 
 //enternel lib imports
 const App = () => {
-  const accessToken = SessionHelper.getToken();
+  const accessToken = false;
 
   return (
     <>
@@ -27,7 +27,7 @@ const App = () => {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
-      <FullScreenLoader />
+      {/* <FullScreenLoader /> */}
     </>
   );
 };

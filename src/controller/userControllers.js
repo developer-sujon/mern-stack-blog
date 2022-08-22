@@ -15,15 +15,18 @@ const sendMailUtility = require("../utils/sendMailUtility");
 const genRand = require("../helper/randGen");
 
 /**
- * @desc Select User
+ * @desc Select All User
  * @access public
- * @route /api/v1/user/selectAllUser
+ * @route /api/v1/user/selectUser
  * @methud GET
  */
 
-const selectAllUser = async (req, res) => {
+const selectUser = async (req, res) => {
+  const { userName } = req;
   try {
-    const users = await UserModel.aggregate([{ $project: { password: 0 } }]);
+    const users = await UserModel.aggregate([
+      { $match: { userName: userName } },
+    ]);
 
     res.json(users);
   } catch (e) {
@@ -472,7 +475,7 @@ const recoveryPassword = async (req, res) => {
 };
 
 module.exports = {
-  selectAllUser,
+  selectUser,
   selectUserProfile,
   updateUser,
   deleteUser,

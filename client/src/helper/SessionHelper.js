@@ -1,21 +1,30 @@
 class SessionHelper {
   static setToken(accessToken) {
-    sessionStorage.setItem("accessToken", accessToken);
+    localStorage.setItem("accessToken", accessToken);
   }
   static getToken() {
-    return sessionStorage.getItem("accessToken");
+    return localStorage.getItem("accessToken") || null;
   }
   static removeToken() {
-    return sessionStorage.removeItem("accessToken");
+    return localStorage.removeItem("accessToken");
   }
   static setUserDetails(user) {
-    sessionStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("user", JSON.stringify(user));
   }
   static getUserDetails() {
-    return JSON.parse(sessionStorage.getItem("user"));
+    return JSON.parse(localStorage.getItem("user")) || null;
   }
   static removeUserDetails() {
-    return sessionStorage.removeItem("user");
+    return localStorage.removeItem("user");
+  }
+  static setUserRoles(roles) {
+    localStorage.setItem("roles", JSON.stringify(roles));
+  }
+  static getUserRoles() {
+    return JSON.parse(localStorage.getItem("roles")) || null;
+  }
+  static removeUserRoles() {
+    return localStorage.removeItem("roles");
   }
 }
 

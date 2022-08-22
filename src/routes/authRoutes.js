@@ -7,7 +7,7 @@ const {
   loginUser,
 } = require("../controller/authControllers");
 
-//Register User
+//registration User
 authRoutes.post("/registrationUser", registrationUser);
 
 //Login User

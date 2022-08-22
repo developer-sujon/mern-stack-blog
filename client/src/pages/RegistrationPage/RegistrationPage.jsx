@@ -2,11 +2,12 @@
 import React, { Suspense, lazy } from "react";
 
 //Internal Lib Import
-import AppNavigation from "../../partials/AppNavigation";
 import LazyLoader from "../../components/MasterLayout/LazyLoader";
-
 const RegistrationUser = lazy(() =>
   import("../../components/RegistrationUser/RegistrationUser"),
+);
+const AppNavigation = lazy(() =>
+  import("../../components/Navigation/AppNavigation"),
 );
 
 const RegistrationPage = () => {
