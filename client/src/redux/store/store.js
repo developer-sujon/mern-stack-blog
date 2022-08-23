@@ -1,18 +1,16 @@
 //External import
 import { configureStore } from "@reduxjs/toolkit";
-import axios from "axios";
 
 //Internal Import
 import authReducer from "../slices/authSlice";
 import profileReducer from "../slices/profileSlice";
-axios.defaults.baseURL = "http://localhost:8080/api/v1";
-axios.defaults.headers.post["Content-Type"] =
-  "application/x-www-form-urlencoded";
+import categoryReducer from "../slices/categorySlice";
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
     profile: profileReducer,
+    category: categoryReducer,
   },
 });
 

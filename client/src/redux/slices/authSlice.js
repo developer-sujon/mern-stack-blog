@@ -50,26 +50,27 @@ const authSlice = createSlice({
   name: "authSlice",
   initialState: {
     roles: SessionHelper.getUserRoles(),
+    accessToken: SessionHelper.getToken(),
   },
 
   //registration user reducers
   extraReducers: (builder) => {
     builder.addCase(registrationUserAction.pending, (state, action) => {
-      state.loding = true;
+      state.loading = true;
       state.appError = false;
       state.serverError = false;
       state.registration = false;
     });
 
     builder.addCase(registrationUserAction.fulfilled, (state, action) => {
-      state.loding = false;
+      state.loading = false;
       state.appError = false;
       state.serverError = false;
       state.registration = true;
     });
 
     builder.addCase(registrationUserAction.rejected, (state, action) => {
-      state.loding = false;
+      state.loading = false;
       state.appError = action?.payload?.message;
       state.serverError = action?.error?.message;
       state.registration = false;
@@ -77,40 +78,43 @@ const authSlice = createSlice({
 
     //login user reducers
     builder.addCase(loginUserAction.pending, (state, action) => {
-      state.loding = true;
+      state.loading = true;
       state.appError = false;
       state.serverError = false;
       state.roles = null;
+      state.accessToken = null;
     });
 
     builder.addCase(loginUserAction.fulfilled, (state, action) => {
-      state.loding = false;
+      state.loading = false;
       state.appError = false;
       state.serverError = false;
       state.roles = action.payload.roles;
+      state.accessToken = action.payload.accessToken;
     });
 
     builder.addCase(loginUserAction.rejected, (state, action) => {
-      state.loding = false;
+      state.loading = false;
       state.appError = action?.payload?.message;
       state.serverError = action?.error?.message;
       state.roles = null;
+      state.accessToken = null;
     });
 
     //user logout  reducers
     builder.addCase(logoutUserAction.pending, (state, action) => {
-      state.loding = true;
+      state.loading = true;
     });
 
     builder.addCase(logoutUserAction.fulfilled, (state, action) => {
-      state.loding = false;
+      state.loading = false;
       state.appError = false;
       state.serverError = false;
       state.roles = null;
     });
 
     builder.addCase(logoutUserAction.rejected, (state, action) => {
-      state.loding = false;
+      state.loading = false;
       state.appError = action?.payload?.message;
       state.serverError = action?.error?.message;
     });

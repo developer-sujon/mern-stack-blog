@@ -9,7 +9,7 @@ import { Navigate } from "react-router-dom";
 
 const RegistrationUser = () => {
   const dispatch = useDispatch();
-  const { loding, appError, serverError, login } = useSelector(
+  const { loading, appError, serverError, registration } = useSelector(
     (state) => state.auth,
   );
 
@@ -71,7 +71,7 @@ const RegistrationUser = () => {
                     {appError || serverError}
                   </span>
                 ) : null}
-                {login && <Navigate to="/login" replace={true} />}
+                {registration && <Navigate to="/login" replace={true} />}
                 <form onSubmit={handleSubmit(registrationHandler)}>
                   <h3 className="mb-10 text-2xl text-white font-bold font-heading">
                     Register Account–
@@ -338,10 +338,10 @@ const RegistrationUser = () => {
                   <button
                     type="submit"
                     className="py-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full transition duration-200"
-                    disabled={loding}
+                    disabled={loading}
                   >
                     Register
-                    {loding && (
+                    {loading && (
                       <span class="inline-block w-3 h-3 border-[3px] rounded-full border-t-black/10 border-r-black/10 animate-spin ml-2"></span>
                     )}
                   </button>

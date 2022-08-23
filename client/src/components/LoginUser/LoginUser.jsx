@@ -11,7 +11,7 @@ import poster from "../../assets/images/poster.png";
 import { loginUserAction } from "../../redux/slices/authSlice";
 
 const LoginUser = () => {
-  const { loding, appError, serverError, roles } = useSelector(
+  const { loading, appError, serverError, roles } = useSelector(
     (state) => state.auth,
   );
 
@@ -127,10 +127,10 @@ const LoginUser = () => {
                   <button
                     type="submit"
                     className="py-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full transition duration-200"
-                    disabled={loding}
+                    disabled={loading}
                   >
                     Login
-                    {loding && (
+                    {loading && (
                       <span class="inline-block w-3 h-3 border-[3px] rounded-full border-t-black/10 border-r-black/10 animate-spin ml-2"></span>
                     )}
                   </button>

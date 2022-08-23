@@ -21,14 +21,20 @@ const createCategory = async (req, res) => {
   }
 
   const newCategory = new CategoryModel({
-    name: name.toLowerCase(),
+    name,
     userId,
   });
+
+  const existCategory = await CategoryModel.aggregate([{ $match: { name } }]);
+
+  if (existCategory.length > 0) {
+    throw createError("Category Name Already Exist", 400);
+  }
 
   try {
     const category = await newCategory.save();
 
-    res.status(201).json(category);
+    res.status(201).json({ message: "Category Create Successfull" });
   } catch (e) {
     throw createError(e.message, e.status);
   }
@@ -44,9 +50,20 @@ const createCategory = async (req, res) => {
 const selectAllCategory = async (req, res) => {
   try {
     const categories = await CategoryModel.aggregate([
+      { $sort: { _id: -1 } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
       {
         $project: {
           name: 1,
+          user: { userName: 1, avatar: 1, email: 1 },
+          createdAt: 1,
         },
       },
     ]);
@@ -100,6 +117,12 @@ const updateCategory = async (req, res) => {
 
     if (!category.length > 0) {
       throw createError("Category Not Found", 404);
+    }
+
+    const existCategory = await CategoryModel.aggregate([{ $match: { name } }]);
+
+    if (existCategory.length > 0) {
+      throw createError("Category Name Already Exist", 400);
     }
 
     await CategoryModel.findByIdAndUpdate(id, {
