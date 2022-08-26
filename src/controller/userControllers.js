@@ -26,6 +26,19 @@ const selectUser = async (req, res) => {
   try {
     const users = await UserModel.aggregate([
       { $match: { userName: userName } },
+      {
+        $project: {
+          name: 1,
+          phone: 1,
+          userName: 1,
+          email: 1,
+          roles: 1,
+          postCount: 1,
+          followes: 1,
+          following: 1,
+          avatar: 1,
+        },
+      },
     ]);
 
     res.json(users);

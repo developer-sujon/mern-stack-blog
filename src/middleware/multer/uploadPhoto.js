@@ -22,7 +22,7 @@ const avataFileFilter = (req, file, cb) => {
 const imageUpload = multer({
   storage: multerStorage,
   limits: {
-    fileSize: 5000000,
+    fileSize: 1000000,
   },
   fileFilter: avataFileFilter,
 });

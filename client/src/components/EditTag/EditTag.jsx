@@ -1,35 +1,48 @@
 //External Import
+import { useEffect, useState } from "react";
+import { Navigate, useParams } from "react-router-dom";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BsBookmarkCheck } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
-import * as yup from "yup";
-import { Navigate } from "react-router-dom";
 import { useFormik } from "formik";
+import * as yup from "yup";
 
 //Internal Imports
-import { createCategoryAction } from "../../redux/slices/categorySlice";
+import {
+  selectTagAction,
+  updateTagAction,
+  deleteTagAction,
+} from "../../redux/slices/tagSlice";
 
-const AddCategory = () => {
-  const store = useSelector((state) => state.category);
-  const { loading, appError, serverError, isCreated } = store;
-
+const EditTag = () => {
+  const { id } = useParams();
   const dispatch = useDispatch();
 
-  const categorySchema = yup.object().shape({
-    name: yup.string().required("Name is required"),
-  });
+  useEffect(() => {
+    dispatch(selectTagAction(id));
+  }, [dispatch]);
+
+  const state = useSelector((state) => state.tag);
+  const { loading, appError, serverError, tag, isEdited, isDeleted } = state;
+
+  const tagSchema = yup
+    .object({
+      name: yup.string().required("Tag Name is required"),
+    })
+    .required();
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      name: "",
+      name: tag?.name,
     },
     onSubmit: (values) => {
-      dispatch(createCategoryAction(values));
+      dispatch(updateTagAction({ data: values, id }));
     },
-    validationSchema: categorySchema,
+    validationSchema: tagSchema,
   });
 
-  if (isCreated) return <Navigate to="/category-list" />;
+  if (isEdited || isDeleted) return <Navigate to="/tag-list" />;
 
   return (
     <>
@@ -38,7 +51,7 @@ const AddCategory = () => {
           <div>
             <BsBookmarkCheck className="mx-auto h-12 w-auto" />
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-              Add New Category
+              Update Tag
             </h2>
             <p className="mt-2 text-center text-sm text-gray-600">
               <p className="font-medium text-indigo-600 hover:text-indigo-500">
@@ -51,12 +64,11 @@ const AddCategory = () => {
               {appError || serverError}
             </span>
           ) : null}
-
           <form className="mt-8 space-y-6" onSubmit={formik.handleSubmit}>
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="rounded-md shadow-sm -space-y-px">
               <div>
-                <label htmlFor="Name" className="sr-only">
+                <label htmlFor="name" className="sr-only">
                   Name
                 </label>
 
@@ -67,7 +79,7 @@ const AddCategory = () => {
                   type="text"
                   autoComplete="text"
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-center focus:z-10 sm:text-sm"
-                  placeholder="New Category"
+                  placeholder="Update Tag"
                 />
                 <div className="text-red-400 mb-2">
                   {formik.touched.name && formik.errors.name}
@@ -81,21 +93,21 @@ const AddCategory = () => {
                   type="submit"
                   className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                  <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                    <AiOutlinePlus
-                      className="h-5 w-5 text-yellow-500 group-hover:text-indigo-400"
-                      aria-hidden="true"
-                    />
-                  </span>
-                  Add new Category
+                  Update Tag
                 </button>
               </div>
             </div>
           </form>
+          <button
+            onClick={() => dispatch(deleteTagAction(id))}
+            className="group relative w-full flex justify-center my-5 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Delete Tag
+          </button>
         </div>
       </div>
     </>
   );
 };
 
-export default AddCategory;
+export default EditTag;

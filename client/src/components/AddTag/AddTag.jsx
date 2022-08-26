@@ -2,21 +2,21 @@
 import { AiOutlinePlus } from "react-icons/ai";
 import { BsBookmarkCheck } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
+import { useFormik } from "formik";
 import * as yup from "yup";
 import { Navigate } from "react-router-dom";
-import { useFormik } from "formik";
 
 //Internal Imports
-import { createCategoryAction } from "../../redux/slices/categorySlice";
+import { createTagAction } from "../../redux/slices/tagSlice";
 
-const AddCategory = () => {
-  const store = useSelector((state) => state.category);
+const AddTag = () => {
+  const store = useSelector((state) => state.tag);
   const { loading, appError, serverError, isCreated } = store;
 
   const dispatch = useDispatch();
 
-  const categorySchema = yup.object().shape({
-    name: yup.string().required("Name is required"),
+  const tagSchema = yup.object().shape({
+    name: yup.string().required("Tag Name is required"),
   });
 
   const formik = useFormik({
@@ -24,12 +24,12 @@ const AddCategory = () => {
       name: "",
     },
     onSubmit: (values) => {
-      dispatch(createCategoryAction(values));
+      dispatch(createTagAction(values));
     },
-    validationSchema: categorySchema,
+    validationSchema: tagSchema,
   });
 
-  if (isCreated) return <Navigate to="/category-list" />;
+  if (isCreated) return <Navigate to="/tag-list" />;
 
   return (
     <>
@@ -38,7 +38,7 @@ const AddCategory = () => {
           <div>
             <BsBookmarkCheck className="mx-auto h-12 w-auto" />
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-              Add New Category
+              Add New tag
             </h2>
             <p className="mt-2 text-center text-sm text-gray-600">
               <p className="font-medium text-indigo-600 hover:text-indigo-500">
@@ -56,7 +56,7 @@ const AddCategory = () => {
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="rounded-md shadow-sm -space-y-px">
               <div>
-                <label htmlFor="Name" className="sr-only">
+                <label htmlFor="email-address" className="sr-only">
                   Name
                 </label>
 
@@ -67,7 +67,7 @@ const AddCategory = () => {
                   type="text"
                   autoComplete="text"
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-center focus:z-10 sm:text-sm"
-                  placeholder="New Category"
+                  placeholder="New Tag"
                 />
                 <div className="text-red-400 mb-2">
                   {formik.touched.name && formik.errors.name}
@@ -87,7 +87,7 @@ const AddCategory = () => {
                       aria-hidden="true"
                     />
                   </span>
-                  Add new Category
+                  Add new tag
                 </button>
               </div>
             </div>
@@ -98,4 +98,4 @@ const AddCategory = () => {
   );
 };
 
-export default AddCategory;
+export default AddTag;

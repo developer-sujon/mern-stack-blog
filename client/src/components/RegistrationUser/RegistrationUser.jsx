@@ -1,8 +1,7 @@
 //external lib imports
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { useFormik } from "formik";
 import * as yup from "yup";
 import { registrationUserAction } from "../../redux/slices/authSlice";
 import { Navigate } from "react-router-dom";
@@ -13,40 +12,44 @@ const RegistrationUser = () => {
     (state) => state.auth,
   );
 
-  const schema = yup
-    .object({
-      name: yup.string().required("Name is required"),
-      userName: yup.string().required("User Name is required"),
-      email: yup
-        .string()
-        .required("Email Address is required")
-        .email("Invalid Email Address"),
-      phone: yup
-        .string()
-        .required("Phone Number  is required")
-        .matches(
-          /(^(\+88|0088|88)?(01){1}[3456789]{1}(\d){8})$/,
-          "Invalid Phone Number",
-        ),
-      password: yup.string().required("Password is required"),
-      confirmPassword: yup
-        .string()
-        .oneOf([yup.ref("password"), null], "Passwords must match"),
-    })
-    .required();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-    mode: "all",
+  const registrationSchema = yup.object().shape({
+    name: yup.string().required("Name is required"),
+    userName: yup.string().required("User Name is required"),
+    email: yup
+      .string()
+      .required("Email Address is required")
+      .email("Invalid Email Address"),
+    phone: yup
+      .string()
+      .required("Phone Number  is required")
+      .matches(
+        /(^(\+88|0088|88)?(01){1}[3456789]{1}(\d){8})$/,
+        "Invalid Phone Number",
+      ),
+    password: yup.string().required("Password is required"),
+    confirmPassword: yup
+      .string()
+      .required("Confirm Password is required")
+      .oneOf(
+        [yup.ref("password"), null],
+        "Passwords and Confirm Password must match",
+      ),
   });
 
-  const registrationHandler = (data) => {
-    dispatch(registrationUserAction(data));
-  };
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      userName: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+    },
+    onSubmit: (values) => {
+      dispatch(registrationUserAction(values));
+    },
+    validationSchema: registrationSchema,
+  });
 
   return (
     <section className="relative py-20 2xl:py-40 bg-gray-800 overflow-hidden">
@@ -72,7 +75,7 @@ const RegistrationUser = () => {
                   </span>
                 ) : null}
                 {registration && <Navigate to="/login" replace={true} />}
-                <form onSubmit={handleSubmit(registrationHandler)}>
+                <form onSubmit={formik.handleSubmit}>
                   <h3 className="mb-10 text-2xl text-white font-bold font-heading">
                     Register Account–
                   </h3>
@@ -117,13 +120,15 @@ const RegistrationUser = () => {
                     </span>
                     <input
                       className="w-full pl-4 pr-6 py-4 font-bold placeholder-gray-300 rounded-r-full focus:outline-none"
-                      type="name"
-                      placeholder="First Name"
-                      {...register("name")}
+                      type="text"
+                      placeholder="Name"
+                      value={formik.values.name}
+                      onChange={formik.handleChange("name")}
+                      onBlur={formik.handleBlur("name")}
                     />
                   </div>
                   <div className="text-red-400 mb-2 capitalize">
-                    {errors?.name?.message}
+                    {formik.touched.name && formik.errors.name}
                   </div>
                   <div className="flex items-center pl-6 mb-3 bg-white rounded-full">
                     <span className="inline-block pr-3 py-2 border-r border-gray-50">
@@ -166,13 +171,15 @@ const RegistrationUser = () => {
                     </span>
                     <input
                       className="w-full pl-4 pr-6 py-4 font-bold placeholder-gray-300 rounded-r-full focus:outline-none"
-                      type="userName"
-                      placeholder="Last Name"
-                      {...register("userName")}
+                      type="text"
+                      placeholder="User Name"
+                      value={formik.values.userName}
+                      onChange={formik.handleChange("userName")}
+                      onBlur={formik.handleBlur("userName")}
                     />
                   </div>
                   <div className="text-red-400 mb-2 capitalize">
-                    {errors?.userName?.message}
+                    {formik.touched.userName && formik.errors.userName}
                   </div>
                   <div className="flex items-center pl-6 mb-3 bg-white rounded-full">
                     <span className="inline-block pr-3 py-2 border-r border-gray-50">
@@ -217,11 +224,13 @@ const RegistrationUser = () => {
                       className="w-full pl-4 pr-6 py-4 font-bold placeholder-gray-300 rounded-r-full focus:outline-none"
                       type="email"
                       placeholder="example@gmail.com"
-                      {...register("email")}
+                      value={formik.values.email}
+                      onChange={formik.handleChange("email")}
+                      onBlur={formik.handleBlur("email")}
                     />
                   </div>
                   <div className="text-red-400 mb-2 capitalize">
-                    {errors?.email?.message}
+                    {formik.touched.email && formik.errors.email}
                   </div>
                   <div className="flex items-center pl-6 mb-3 bg-white rounded-full">
                     <span className="inline-block pr-3 py-2 border-r border-gray-50">
@@ -266,11 +275,13 @@ const RegistrationUser = () => {
                       className="w-full pl-4 pr-6 py-4 font-bold placeholder-gray-300 rounded-r-full focus:outline-none"
                       type="phone"
                       placeholder="+8801772703036"
-                      {...register("phone")}
+                      value={formik.values.phone}
+                      onChange={formik.handleChange("phone")}
+                      onBlur={formik.handleBlur("phone")}
                     />
                   </div>
                   <div className="text-red-400 mb-2 capitalize">
-                    {errors?.phone?.message}
+                    {formik.touched.phone && formik.errors.phone}
                   </div>
                   <div className="flex items-center pl-6 mb-3 bg-white rounded-full">
                     <span className="inline-block pr-3 py-2 border-r border-gray-50">
@@ -296,11 +307,13 @@ const RegistrationUser = () => {
                       className="w-full pl-4 pr-6 py-4 font-bold placeholder-gray-300 rounded-r-full focus:outline-none"
                       type="password"
                       placeholder="Password"
-                      {...register("password")}
+                      value={formik.values.password}
+                      onChange={formik.handleChange("password")}
+                      onBlur={formik.handleBlur("password")}
                     />
                   </div>
                   <div className="text-red-400 mb-2  capitalize">
-                    {errors?.password?.message}
+                    {formik.touched.password && formik.errors.password}
                   </div>
 
                   <div className="flex items-center pl-6 mb-3 bg-white rounded-full">
@@ -327,11 +340,14 @@ const RegistrationUser = () => {
                       className="w-full pl-4 pr-6 py-4 font-bold placeholder-gray-300 rounded-r-full focus:outline-none"
                       type="password"
                       placeholder="Confirm Password"
-                      {...register("confirmPassword")}
+                      alue={formik.values.confirmPassword}
+                      onChange={formik.handleChange("confirmPassword")}
+                      onBlur={formik.handleBlur("confirmPassword")}
                     />
                   </div>
                   <div className="text-red-400 mb-2  capitalize">
-                    {errors?.confirmPassword?.message}
+                    {formik.touched.confirmPassword &&
+                      formik.errors.confirmPassword}
                   </div>
 
                   <div className="inline-flex mb-10"></div>

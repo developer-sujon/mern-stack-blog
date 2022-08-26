@@ -1,4 +1,3 @@
-/* This example requires Tailwind CSS v2.0+ */
 import { Fragment } from "react";
 import { useDispatch } from "react-redux";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
@@ -11,6 +10,8 @@ import {
   AiOutlinePlus,
 } from "react-icons/ai";
 import { BsBookmarkCheck } from "react-icons/bs";
+
+//Internal Import
 import { logoutUserAction } from "../../../redux/slices/authSlice";
 
 const navigation = [
@@ -24,7 +25,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const PrivateNavigation = ({ isLogin }) => {
+const PrivateNavigation = ({ user }) => {
   const dispatch = useDispatch();
 
   const userNavigation = [
@@ -40,7 +41,6 @@ const PrivateNavigation = ({ isLogin }) => {
             <div className="flex justify-between h-16">
               <div className="flex">
                 <div className="-ml-2 mr-2 flex items-center md:hidden">
-                  {/* Mobile menu button */}
                   <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                     <span className="sr-only">Open main menu</span>
                     {open ? (
@@ -57,7 +57,6 @@ const PrivateNavigation = ({ isLogin }) => {
                   </Disclosure.Button>
                 </div>
                 <div className="flex-shrink-0 flex items-center">
-                  {/* Logo */}
                   <BsBookmarkCheck className="h-10 w-10 text-yellow-200" />
                 </div>
                 <div className="hidden md:ml-6 md:flex md:items-center md:space-x-4">
@@ -104,7 +103,6 @@ const PrivateNavigation = ({ isLogin }) => {
                   </button>
                 </div>
                 <div className="hidden md:ml-4 md:flex-shrink-0 md:flex md:items-center">
-                  {/* Profile dropdown */}
                   <Menu as="div" className="ml-3 relative z-10">
                     {({ open }) => (
                       <>
@@ -113,8 +111,8 @@ const PrivateNavigation = ({ isLogin }) => {
                             <span className="sr-only">Open user menu</span>
                             <img
                               className="h-8 w-8 rounded-full"
-                              // src={isLogin?.profilePhoto}
-                              alt=""
+                              src={user?.avatar}
+                              alt={user?.roles}
                             />
                           </Menu.Button>
                         </div>
@@ -175,22 +173,22 @@ const PrivateNavigation = ({ isLogin }) => {
                 </a>
               ))}
             </div>
-            {/* Mobile */}
+
             <div className="pt-4 pb-3 border-t border-gray-700">
               <div className="flex items-center px-5 sm:px-6">
                 <div className="flex-shrink-0">
                   <img
                     className="h-10 w-10 rounded-full"
-                    // src={isLogin.profilePhoto}
-                    alt=""
+                    src={user?.avatar}
+                    alt={user?.roles?.[0]}
                   />
                 </div>
                 <div className="ml-3">
                   <div className="text-base font-medium text-white">
-                    {/* {user.name} */}
+                    {user?.userName}
                   </div>
                   <div className="text-sm font-medium text-gray-400">
-                    {/* {user.email} */}
+                    {user?.email}
                   </div>
                 </div>
                 <button className="ml-auto flex-shrink-0 bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">

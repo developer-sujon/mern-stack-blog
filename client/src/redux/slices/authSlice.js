@@ -1,16 +1,18 @@
 //external import
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
 
 //enternel lib imports
 import SessionHelper from "../../helper/SessionHelper";
+import { postRequest } from "../../RestApi/RestClient";
+
+export const resetAuthAction = createAction("/auth/reset");
 
 //registration user action
 export const registrationUserAction = createAsyncThunk(
   "auth/registration",
   async (user, { rejectWithValue, getState, dispatch }) => {
     try {
-      const { data } = await axios.post("/auth/registrationUser", user);
+      const { data } = await postRequest("/auth/registrationUser", user);
       return data;
     } catch (e) {
       return rejectWithValue(e?.response?.data);
@@ -23,9 +25,9 @@ export const loginUserAction = createAsyncThunk(
   "auth/login",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     try {
-      const { data } = await axios.post("/auth/loginUser", payload);
+      const { data } = await postRequest("/auth/loginUser", payload);
       SessionHelper.setToken(data.accessToken);
-      SessionHelper.setUserRoles(data.roles);
+      SessionHelper.setUserDetails(data.user);
       return data;
     } catch (e) {
       return rejectWithValue(e?.response?.data);
@@ -39,7 +41,7 @@ export const logoutUserAction = createAsyncThunk(
   async (payload, { rejectWithValue, getState, dispatch }) => {
     try {
       SessionHelper.removeToken();
-      SessionHelper.removeUserRoles();
+      SessionHelper.removeUserDetails();
     } catch (e) {
       return rejectWithValue(e?.response?.data);
     }
@@ -49,7 +51,7 @@ export const logoutUserAction = createAsyncThunk(
 const authSlice = createSlice({
   name: "authSlice",
   initialState: {
-    roles: SessionHelper.getUserRoles(),
+    user: SessionHelper.getUserDetails(),
     accessToken: SessionHelper.getToken(),
   },
 
@@ -81,24 +83,29 @@ const authSlice = createSlice({
       state.loading = true;
       state.appError = false;
       state.serverError = false;
-      state.roles = null;
-      state.accessToken = null;
+      state.user = undefined;
+      state.accessToken = undefined;
     });
 
     builder.addCase(loginUserAction.fulfilled, (state, action) => {
       state.loading = false;
       state.appError = false;
       state.serverError = false;
-      state.roles = action.payload.roles;
+      state.user = action.payload.user;
       state.accessToken = action.payload.accessToken;
+    });
+
+    builder.addCase(resetAuthAction, (state, dispatch) => {
+      state.user = SessionHelper.getUserDetails();
+      state.accessToken = SessionHelper.getToken();
     });
 
     builder.addCase(loginUserAction.rejected, (state, action) => {
       state.loading = false;
       state.appError = action?.payload?.message;
       state.serverError = action?.error?.message;
-      state.roles = null;
-      state.accessToken = null;
+      state.user = undefined;
+      state.accessToken = undefined;
     });
 
     //user logout  reducers
@@ -110,7 +117,8 @@ const authSlice = createSlice({
       state.loading = false;
       state.appError = false;
       state.serverError = false;
-      state.roles = null;
+      state.user = undefined;
+      state.accessToken = undefined;
     });
 
     builder.addCase(logoutUserAction.rejected, (state, action) => {

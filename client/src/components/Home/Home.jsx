@@ -2,8 +2,12 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
+import a from "../../a.js";
+
 //enternel lib imports
 import poster from "../../assets/images/poster.png";
+console.log(a);
+
 const Home = () => {
   return (
     <>

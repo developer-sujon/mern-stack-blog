@@ -25,13 +25,13 @@ const createCategory = async (req, res) => {
     userId,
   });
 
-  const existCategory = await CategoryModel.aggregate([{ $match: { name } }]);
-
-  if (existCategory.length > 0) {
-    throw createError("Category Name Already Exist", 400);
-  }
-
   try {
+    const existCategory = await CategoryModel.aggregate([{ $match: { name } }]);
+
+    if (existCategory.length > 0) {
+      throw createError("Category Name Already Exist", 400);
+    }
+
     const category = await newCategory.save();
 
     res.status(201).json({ message: "Category Create Successfull" });
@@ -126,7 +126,7 @@ const updateCategory = async (req, res) => {
     }
 
     await CategoryModel.findByIdAndUpdate(id, {
-      name: name.toLowerCase(),
+      name,
       userId,
     });
 

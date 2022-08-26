@@ -3,18 +3,18 @@ import { Navigate, useParams } from "react-router-dom";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BsBookmarkCheck } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { useFormik } from "formik";
 import * as yup from "yup";
 
 //Internal Imports
 import {
   selectCategoryAction,
   updateCategoryAction,
+  deleteCategoryAction,
 } from "../../redux/slices/categorySlice";
 import { useEffect, useState } from "react";
 
-const UpdateCategory = () => {
+const EditCategory = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
 
@@ -23,32 +23,25 @@ const UpdateCategory = () => {
   }, [dispatch]);
 
   const state = useSelector((state) => state.category);
-  const { loading, appError, serverError, category, categoryUpdated } = state;
+  const { loading, appError, serverError, category, isEdited, isDeleted } =
+    state;
 
-  const categorySchema = yup
-    .object({
-      name: yup.string().required("Category Name is required"),
-    })
-    .required();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      name: category?.name,
-    },
-    resolver: yupResolver(categorySchema),
-    mode: "all",
+  const categorySchema = yup.object().shape({
+    name: yup.string().required("Category Name is required"),
   });
 
-  const updateCaregoryHandler = (data, e) => {
-    dispatch(updateCategoryAction({ data, id }));
-    dispatch(selectCategoryAction(id));
-  };
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      name: category?.name,
+    },
+    onSubmit: (values) => {
+      dispatch(updateCategoryAction({ data: values, id }));
+    },
+    validationSchema: categorySchema,
+  });
 
-  if (categoryUpdated) return <Navigate to="/category-list" />;
+  if (isEdited || isDeleted) return <Navigate to="/category-list" />;
 
   return (
     <>
@@ -70,10 +63,7 @@ const UpdateCategory = () => {
               {appError || serverError}
             </span>
           ) : null}
-          <form
-            className="mt-8 space-y-6"
-            onSubmit={handleSubmit(updateCaregoryHandler)}
-          >
+          <form className="mt-8 space-y-6" onSubmit={formik.handleSubmit}>
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="rounded-md shadow-sm -space-y-px">
               <div>
@@ -82,12 +72,17 @@ const UpdateCategory = () => {
                 </label>
 
                 <input
+                  value={formik.values.name}
+                  onChange={formik.handleChange("name")}
+                  onBlur={formik.handleBlur("name")}
                   type="text"
+                  autoComplete="text"
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-center focus:z-10 sm:text-sm"
-                  id="name"
-                  {...register("name")}
+                  placeholder="Update Category"
                 />
-                <div className="text-red-400 mb-2">{errors?.name?.message}</div>
+                <div className="text-red-400 mb-2">
+                  {formik.touched.name && formik.errors.name}
+                </div>
               </div>
             </div>
 
@@ -102,10 +97,16 @@ const UpdateCategory = () => {
               </div>
             </div>
           </form>
+          <button
+            onClick={() => dispatch(deleteCategoryAction(id))}
+            className="group relative w-full flex justify-center my-5 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Delete Category
+          </button>
         </div>
       </div>
     </>
   );
 };
 
-export default UpdateCategory;
+export default EditCategory;

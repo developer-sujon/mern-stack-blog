@@ -3,17 +3,17 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { BsPencil } from "react-icons/bs";
 
-import { selectAllCategoryAction } from "../../redux/slices/categorySlice";
+import { selectAllTagAction } from "../../redux/slices/tagSlice";
 
-const CategoryList = () => {
+const TagList = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(selectAllCategoryAction());
-  }, [dispatch]);
+    dispatch(selectAllTagAction());
+  }, []);
 
-  const store = useSelector((state) => state?.category);
-  const { categoryList, loading, appErr, serverErr } = store;
+  const store = useSelector((state) => state?.tag);
+  const { tagList, loading, appErr, serverErr } = store;
 
   return (
     <div className="w-full max-w-screen-xl mx-auto mt-5">
@@ -23,7 +23,7 @@ const CategoryList = () => {
         <h2 className="text-center text-3xl text-red-600">
           {appErr} {serverErr}
         </h2>
-      ) : categoryList?.length <= 0 ? (
+      ) : tagList?.length <= 0 ? (
         <h2 className="text-center text-3xl text-green-800">
           No category Found
         </h2>
@@ -62,34 +62,34 @@ const CategoryList = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {categoryList?.map((category) => (
-                      <tr className="bg-gray-50">
+                    {tagList?.map((tag) => (
+                      <tr className="bg-gray-50" key={tag._id}>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="flex-shrink-0 h-10 w-10">
                               <img
                                 className="h-10 w-10 rounded-full"
-                                src={category?.user[0]?.avatar}
-                                alt="category profile"
+                                src={tag?.user[0]?.avatar}
+                                alt="tag profile"
                               />
                             </div>
                             <div className="ml-4">
                               <div className="text-sm font-medium text-gray-900">
-                                {category?.user[0]?.userName}
+                                {tag?.user[0]?.userName}
                               </div>
                               <div className="text-sm text-gray-500">
-                                {category?.user[0]?.email}
+                                {tag?.user[0]?.email}
                               </div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 capitalize">
-                          {category.name}
+                          {tag.name}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(category?.createdAt).toDateString()}
+                          {new Date(tag?.createdAt).toDateString()}
                         </td>
-                        <Link to={`/edit-category/${category._id}`}>
+                        <Link to={`/edit-tag/${tag._id}`}>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             <BsPencil className="h-5 text-indigo-500" />
                           </td>
@@ -107,4 +107,4 @@ const CategoryList = () => {
   );
 };
 
-export default CategoryList;
+export default TagList;

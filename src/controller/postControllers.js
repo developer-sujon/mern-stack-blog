@@ -26,7 +26,7 @@ const createPost = async (req, res) => {
   const isProfane = filter.isProfane(title, description);
 
   if (tagsId) {
-    tagsId = tagsId.split(" ");
+    tagsId = tagsId.split(",");
   } else {
     tagsId = [];
   }
@@ -54,7 +54,7 @@ const createPost = async (req, res) => {
 
     const post = await newPost.save();
 
-    res.status(201).json(post);
+    res.status(201).json({ message: "Post Creat Successfull" });
   } catch (e) {
     throw createError(e.message, e.status);
   }
@@ -123,7 +123,7 @@ const selectAllPost = async (req, res) => {
           isLike: 1,
           isDisLike: 1,
           numView: 1,
-          userName: { $first: "$user.userName" },
+          user: { userName: 1, avatar: 1 },
         },
       },
     ]);
@@ -219,7 +219,7 @@ const selectPostBySlug = async (req, res) => {
           isLike: 1,
           isDisLike: 1,
           numView: 1,
-          userName: { $first: "$user.userName" },
+          user: { userName: 1, avatar: 1, _id: 1 },
         },
       },
     ]);

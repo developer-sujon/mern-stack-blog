@@ -1,8 +1,7 @@
 //external lib imports
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { useFormik } from "formik";
 import * as yup from "yup";
 import { Navigate } from "react-router-dom";
 
@@ -17,28 +16,24 @@ const LoginUser = () => {
 
   const dispatch = useDispatch();
 
-  const schema = yup
-    .object({
-      email: yup
-        .string()
-        .required("Email is required")
-        .email("Invalid Email Address"),
-      password: yup.string().required("Password is required"),
-    })
-    .required();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-    mode: "all",
+  const loginSchema = yup.object().shape({
+    email: yup
+      .string()
+      .required("Email is required")
+      .email("Invalid Email Address"),
+    password: yup.string().required("Password is required"),
   });
 
-  const loginHandler = (data) => {
-    dispatch(loginUserAction(data));
-  };
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    onSubmit: (values) => {
+      dispatch(loginUserAction(values));
+    },
+    validationSchema: loginSchema,
+  });
 
   return (
     <section className="min-h-screen relative py-20 2xl:py-40 bg-gray-900 overflow-hidden">
@@ -60,7 +55,7 @@ const LoginUser = () => {
                   </span>
                 ) : null}
                 {roles && <Navigate to="/" replace={true} />}
-                <form onSubmit={handleSubmit(loginHandler)}>
+                <form onSubmit={formik.handleSubmit}>
                   <h3 className="mb-10 text-2xl font-bold font-heading">
                     Login to your Account
                   </h3>
@@ -88,11 +83,13 @@ const LoginUser = () => {
                       className="w-full pr-6 pl-4 py-4 font-bold placeholder-gray-300 rounded-r-full focus:outline-none"
                       type="email"
                       placeholder="Enter Email"
-                      {...register("email")}
+                      value={formik.values.email}
+                      onChange={formik.handleChange("email")}
+                      onBlur={formik.handleBlur("email")}
                     />
                   </div>
                   <div className="text-red-400 mb-2">
-                    {errors?.email?.message}
+                    {formik.touched.email && formik.errors.email}
                   </div>
                   <div className="flex items-center pl-6 mb-6 border border-gray-50 bg-white rounded-full">
                     <span className="inline-block pr-3 border-r border-gray-50">
@@ -118,11 +115,13 @@ const LoginUser = () => {
                       className="w-full pr-6 pl-4 py-4 font-bold placeholder-gray-300 rounded-r-full focus:outline-none"
                       type="password"
                       placeholder=" Password"
-                      {...register("password")}
+                      value={formik.values.password}
+                      onChange={formik.handleChange("password")}
+                      onBlur={formik.handleBlur("password")}
                     />
                   </div>
                   <div className="text-red-400 mb-2">
-                    {errors?.password?.message}
+                    {formik.touched.password && formik.errors.password}
                   </div>
                   <button
                     type="submit"

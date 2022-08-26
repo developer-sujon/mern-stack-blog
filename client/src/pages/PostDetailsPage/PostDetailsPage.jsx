@@ -2,20 +2,20 @@ import React, { lazy, Suspense } from "react";
 
 //Internal Lib Import
 import LazyLoader from "../../components/MasterLayout/LazyLoader";
-const UpdateCategory = lazy(() =>
-  import("../../components/UpdateCategory/UpdateCategory"),
+const PostDetails = lazy(() =>
+  import("../../components/PostDetails/PostDetails"),
 );
 const AppNavigation = lazy(() =>
   import("../../components/Navigation/AppNavigation"),
 );
 
-const UpdateCategoryPage = () => {
+const PostDetailsPage = () => {
   return (
     <Suspense fallback={<LazyLoader />}>
-      <AppNavigation title="Create Post Page" />
-      <UpdateCategory />
+      <AppNavigation title="Edit Category Page" />
+      <PostDetails />
     </Suspense>
   );
 };
 
-export default UpdateCategoryPage;
+export default PostDetailsPage;

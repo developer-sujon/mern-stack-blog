@@ -11,7 +11,6 @@ const postSchema = new Schema(
     },
     postThumbnail: {
       type: String,
-      default: "/uploads/images/posts/post.jpg",
     },
     slug: {
       type: String,

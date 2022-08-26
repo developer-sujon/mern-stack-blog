@@ -1,5 +1,5 @@
-/* This example requires Tailwind CSS v2.0+ */
 import { Fragment } from "react";
+import { useDispatch } from "react-redux";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 
 import { Link } from "react-router-dom";
@@ -13,6 +13,9 @@ import {
 
 import { BsBookmarkCheck } from "react-icons/bs";
 
+//Internal Imports
+import { logoutUserAction } from "../../../redux/slices/authSlice";
+
 const navigation = [
   { name: "Home", href: "/", current: true },
   { name: "Create", href: "/create-post", current: false },
@@ -20,14 +23,17 @@ const navigation = [
   { name: "Authors", href: "/users", current: false },
   { name: "Add Category", href: "/add-category", current: false },
   { name: "Category List", href: "/category-list", current: false },
+  { name: "Add Tag", href: "/add-tag", current: false },
+  { name: "Tag List", href: "/tag-list", current: false },
 ];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const AdminNavigation = () => {
-  //Navigation
+const AdminNavigation = ({ user }) => {
+  const dispatch = useDispatch();
+
   const userNavigation = [
     { name: "Your Profile", href: `/profile` },
     { name: "Change your password", href: "/update-password" },
@@ -41,7 +47,6 @@ const AdminNavigation = () => {
             <div className="flex justify-between h-16">
               <div className="flex">
                 <div className="-ml-2 mr-2 flex items-center md:hidden">
-                  {/* Mobile menu button */}
                   <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                     <span className="sr-only">Open main menu</span>
                     {open ? (
@@ -58,7 +63,6 @@ const AdminNavigation = () => {
                   </Disclosure.Button>
                 </div>
                 <div className="flex-shrink-0 flex items-center">
-                  {/* Logo */}
                   <BsBookmarkCheck className="h-10 w-10 text-yellow-200" />
                 </div>
                 <div className="hidden md:ml-6 md:flex md:items-center md:space-x-4">
@@ -81,7 +85,6 @@ const AdminNavigation = () => {
               </div>
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  {/* New post */}
                   <Link
                     to="/create-post"
                     type="button"
@@ -93,10 +96,11 @@ const AdminNavigation = () => {
                     />
                     <span>New Post</span>
                   </Link>
-                  {/* Logout */}
+
                   <button
                     type="button"
                     className="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
+                    onClick={() => dispatch(logoutUserAction())}
                   >
                     <AiOutlineLogout
                       className="-ml-1 mr-2 h-5 w-5"
@@ -106,7 +110,6 @@ const AdminNavigation = () => {
                   </button>
                 </div>
                 <div className="hidden md:ml-4 md:flex-shrink-0 md:flex md:items-center">
-                  {/* Profile dropdown */}
                   <Menu as="div" className="ml-3 relative z-10">
                     {({ open }) => (
                       <>
@@ -115,8 +118,8 @@ const AdminNavigation = () => {
                             <span className="sr-only">Open user menu</span>
                             <img
                               className="h-8 w-8 rounded-full"
-                              // src={userAuth?.profilePhoto}
-                              alt="Admin Profile"
+                              src={user?.avatar}
+                              alt={user?.roles?.[0]}
                             />
                           </Menu.Button>
                         </div>
@@ -180,15 +183,18 @@ const AdminNavigation = () => {
             <div className="pt-4 pb-3 border-t border-gray-700">
               <div className="flex items-center px-5 sm:px-6">
                 <div className="flex-shrink-0">
-                  {/* Image */}
-                  <img className="h-10 w-10 rounded-full" src="" alt="" />
+                  <img
+                    className="h-10 w-10 rounded-full"
+                    src={user?.avatar}
+                    alt={user?.roles?.[0]}
+                  />
                 </div>
                 <div className="ml-3">
                   <div className="text-base font-medium text-white">
-                    {/* {user.name} */}
+                    {user?.userName}
                   </div>
                   <div className="text-sm font-medium text-gray-400">
-                    {/* {user.email} */}
+                    {user?.email}
                   </div>
                 </div>
                 <button className="ml-auto flex-shrink-0 bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">

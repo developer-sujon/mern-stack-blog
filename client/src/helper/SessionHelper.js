@@ -17,15 +17,6 @@ class SessionHelper {
   static removeUserDetails() {
     return localStorage.removeItem("user");
   }
-  static setUserRoles(roles) {
-    localStorage.setItem("roles", JSON.stringify(roles));
-  }
-  static getUserRoles() {
-    return JSON.parse(localStorage.getItem("roles")) || null;
-  }
-  static removeUserRoles() {
-    return localStorage.removeItem("roles");
-  }
 }
 
 export default SessionHelper;

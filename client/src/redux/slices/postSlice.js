@@ -10,17 +10,17 @@ import {
   deleteRequest,
 } from "../../RestApi/RestClient";
 
-//category action to redirect
-const resetCreateAction = createAction("category/create/reset");
-const resetEditAction = createAction("category/edit/reset");
-const resetDeleteAction = createAction("category/delete/reset");
+//post action to redirect
+const resetCreateAction = createAction("post/create/reset");
+const resetEditAction = createAction("post/edit/reset");
+const resetDeleteAction = createAction("post/delete/reset");
 
-//Category Action
-export const createCategoryAction = createAsyncThunk(
-  "category/createCategory",
-  async (category, { rejectWithValue, getState, dispatch }) => {
+//post Action
+export const createPostAction = createAsyncThunk(
+  "post/createPost",
+  async (post, { rejectWithValue, getState, dispatch }) => {
     try {
-      const { data } = await postRequest("/category/createCategory", category);
+      const { data } = await postRequest("/post/createPost", post);
       dispatch(resetCreateAction());
       ToastMessage.successMessage(data?.message);
       return data;
@@ -30,11 +30,11 @@ export const createCategoryAction = createAsyncThunk(
   },
 );
 
-export const selectAllCategoryAction = createAsyncThunk(
-  "category/selectAllCategory",
+export const selectAllPostAction = createAsyncThunk(
+  "post/selectAllpost",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     try {
-      const { data } = await getRequest("/category/selectAllCategory");
+      const { data } = await getRequest("/post/selectAllPost");
       return data;
     } catch (e) {
       return rejectWithValue(e?.response?.data);
@@ -42,11 +42,11 @@ export const selectAllCategoryAction = createAsyncThunk(
   },
 );
 
-export const selectCategoryAction = createAsyncThunk(
-  "category/selectCategory",
-  async (id, { rejectWithValue, getState, dispatch }) => {
+export const selectPostBySlug = createAsyncThunk(
+  "post/selectPostBySlug",
+  async (slug, { rejectWithValue, getState, dispatch }) => {
     try {
-      const { data } = await getRequest(`/category/selectCategory/${id}`);
+      const { data } = await getRequest(`/post/selectPostBySlug/${slug}`);
       return data[0];
     } catch (e) {
       return rejectWithValue(e?.response?.data);
@@ -54,12 +54,12 @@ export const selectCategoryAction = createAsyncThunk(
   },
 );
 
-export const updateCategoryAction = createAsyncThunk(
-  "category/updateCategory",
+export const updatepostAction = createAsyncThunk(
+  "post/updatePost",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     try {
       const { data } = await updateRequest(
-        `/category/updateCategory/${payload.id}`,
+        `/post/updatePost/${payload.id}`,
         payload.data,
       );
       dispatch(resetEditAction());
@@ -71,11 +71,11 @@ export const updateCategoryAction = createAsyncThunk(
   },
 );
 
-export const deleteCategoryAction = createAsyncThunk(
-  "category/deleteCategory",
+export const deletepostAction = createAsyncThunk(
+  "post/deletePost",
   async (id, { rejectWithValue, getState, dispatch }) => {
     try {
-      const { data } = await deleteRequest(`/category/deleteCategory/${id}`);
+      const { data } = await deleteRequest(`/post/deletePost/${id}`);
 
       dispatch(resetDeleteAction());
       ToastMessage.successMessage(data?.message);
@@ -86,14 +86,14 @@ export const deleteCategoryAction = createAsyncThunk(
   },
 );
 
-//Category Slice
-const categorySlice = createSlice({
-  name: "category",
+//post Slice
+const postSlice = createSlice({
+  name: "post",
   initialState: {},
 
   extraReducers: (builder) => {
-    //createCategory
-    builder.addCase(createCategoryAction.pending, (state, action) => {
+    //createpost
+    builder.addCase(createPostAction.pending, (state, action) => {
       state.loading = true;
     });
 
@@ -101,67 +101,67 @@ const categorySlice = createSlice({
       state.isCreated = true;
     });
 
-    builder.addCase(createCategoryAction.fulfilled, (state, action) => {
+    builder.addCase(createPostAction.fulfilled, (state, action) => {
       state.loading = undefined;
       state.appError = undefined;
       state.serverError = undefined;
       state.isCreated = true;
     });
 
-    builder.addCase(createCategoryAction.rejected, (state, action) => {
+    builder.addCase(createPostAction.rejected, (state, action) => {
       state.loading = undefined;
       state.serverError = action.error.message;
       state.appError = action.payload.message;
     });
 
-    //selectAllCategory
-    builder.addCase(selectAllCategoryAction.pending, (state, action) => {
+    //selectAllpost
+    builder.addCase(selectAllPostAction.pending, (state, action) => {
       state.loading = true;
-      state.categoryList = [];
+      state.postLists = [];
       state.appError = undefined;
       state.serverError = undefined;
     });
 
-    builder.addCase(selectAllCategoryAction.fulfilled, (state, action) => {
+    builder.addCase(selectAllPostAction.fulfilled, (state, action) => {
       state.loading = undefined;
-      state.categoryList = action?.payload;
+      state.postLists = action?.payload;
       state.appError = undefined;
       state.serverError = undefined;
-      state.categoryUpdated = undefined;
-      state.categoryCreated = undefined;
+      state.postUpdated = undefined;
+      state.postCreated = undefined;
     });
 
-    builder.addCase(selectAllCategoryAction.rejected, (state, action) => {
+    builder.addCase(selectAllPostAction.rejected, (state, action) => {
       state.loading = undefined;
-      state.categoryList = [];
+      state.postLists = [];
       state.serverError = action?.error?.message;
       state.appError = action?.payload?.message;
     });
 
-    //selectCategory
-    builder.addCase(selectCategoryAction.pending, (state, action) => {
+    //selectPostBySlug
+    builder.addCase(selectPostBySlug.pending, (state, action) => {
       state.loading = true;
-      state.category = {};
+      state.postDetails = undefined;
       state.appError = undefined;
       state.serverError = undefined;
     });
 
-    builder.addCase(selectCategoryAction.fulfilled, (state, action) => {
+    builder.addCase(selectPostBySlug.fulfilled, (state, action) => {
       state.loading = undefined;
-      state.category = action?.payload;
+      state.postDetails = action?.payload;
       state.appError = undefined;
       state.serverError = undefined;
     });
 
-    builder.addCase(selectCategoryAction.rejected, (state, action) => {
+    builder.addCase(selectPostBySlug.rejected, (state, action) => {
       state.loading = undefined;
-      state.category = {};
+      state.postDetails = undefined;
       state.serverError = action?.error?.message;
       state.appError = action?.payload?.message;
     });
 
-    //updateCategory
-    builder.addCase(updateCategoryAction.pending, (state, action) => {
+    //updatepost
+    builder.addCase(updatepostAction.pending, (state, action) => {
       state.loading = true;
     });
 
@@ -169,21 +169,21 @@ const categorySlice = createSlice({
       state.isEdited = true;
     });
 
-    builder.addCase(updateCategoryAction.fulfilled, (state, action) => {
+    builder.addCase(updatepostAction.fulfilled, (state, action) => {
       state.loading = undefined;
       state.appError = undefined;
       state.serverError = undefined;
       state.isEdited = undefined;
     });
 
-    builder.addCase(updateCategoryAction.rejected, (state, action) => {
+    builder.addCase(updatepostAction.rejected, (state, action) => {
       state.loading = undefined;
       state.serverError = action?.error?.message;
       state.appError = action?.payload?.message;
     });
 
-    //deleteCategory
-    builder.addCase(deleteCategoryAction.pending, (state, action) => {
+    //deletepost
+    builder.addCase(deletepostAction.pending, (state, action) => {
       state.loading = true;
     });
 
@@ -191,14 +191,14 @@ const categorySlice = createSlice({
       state.isDeleted = true;
     });
 
-    builder.addCase(deleteCategoryAction.fulfilled, (state, action) => {
+    builder.addCase(deletepostAction.fulfilled, (state, action) => {
       state.loading = undefined;
       state.appError = undefined;
       state.serverError = undefined;
       state.isDeleted = undefined;
     });
 
-    builder.addCase(deleteCategoryAction.rejected, (state, action) => {
+    builder.addCase(deletepostAction.rejected, (state, action) => {
       state.loading = undefined;
       state.serverError = action?.error?.message;
       state.appError = action?.payload?.message;
@@ -206,4 +206,4 @@ const categorySlice = createSlice({
   },
 });
 
-export default categorySlice.reducer;
+export default postSlice.reducer;

@@ -1,8 +1,8 @@
 //External Import
 import { createAsyncThunk, createSlice, createAction } from "@reduxjs/toolkit";
-
-//INternal Imports
 import ToastMessage from "../../helper/ToastMessage";
+
+//Enternal Import
 import {
   postRequest,
   getRequest,
@@ -10,17 +10,17 @@ import {
   deleteRequest,
 } from "../../RestApi/RestClient";
 
-//category action to redirect
-const resetCreateAction = createAction("category/create/reset");
-const resetEditAction = createAction("category/edit/reset");
-const resetDeleteAction = createAction("category/delete/reset");
+//Tag action to redirect
+const resetCreateAction = createAction("Tag/create/reset");
+const resetEditAction = createAction("Tag/edit/reset");
+const resetDeleteAction = createAction("Tag/delete/reset");
 
-//Category Action
-export const createCategoryAction = createAsyncThunk(
-  "category/createCategory",
-  async (category, { rejectWithValue, getState, dispatch }) => {
+//Tag Action
+export const createTagAction = createAsyncThunk(
+  "tag/createTag",
+  async (tag, { rejectWithValue, getState, dispatch }) => {
     try {
-      const { data } = await postRequest("/category/createCategory", category);
+      const { data } = await postRequest("/tag/createTag", tag);
       dispatch(resetCreateAction());
       ToastMessage.successMessage(data?.message);
       return data;
@@ -30,11 +30,11 @@ export const createCategoryAction = createAsyncThunk(
   },
 );
 
-export const selectAllCategoryAction = createAsyncThunk(
-  "category/selectAllCategory",
+export const selectAllTagAction = createAsyncThunk(
+  "tag/selectAllTag",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     try {
-      const { data } = await getRequest("/category/selectAllCategory");
+      const { data } = await getRequest("/tag/selectAllTag");
       return data;
     } catch (e) {
       return rejectWithValue(e?.response?.data);
@@ -42,11 +42,11 @@ export const selectAllCategoryAction = createAsyncThunk(
   },
 );
 
-export const selectCategoryAction = createAsyncThunk(
-  "category/selectCategory",
+export const selectTagAction = createAsyncThunk(
+  "tag/selectTag",
   async (id, { rejectWithValue, getState, dispatch }) => {
     try {
-      const { data } = await getRequest(`/category/selectCategory/${id}`);
+      const { data } = await getRequest(`/tag/selectTag/${id}`);
       return data[0];
     } catch (e) {
       return rejectWithValue(e?.response?.data);
@@ -54,12 +54,12 @@ export const selectCategoryAction = createAsyncThunk(
   },
 );
 
-export const updateCategoryAction = createAsyncThunk(
-  "category/updateCategory",
+export const updateTagAction = createAsyncThunk(
+  "tag/updateTag",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     try {
       const { data } = await updateRequest(
-        `/category/updateCategory/${payload.id}`,
+        `/tag/updateTag/${payload.id}`,
         payload.data,
       );
       dispatch(resetEditAction());
@@ -71,12 +71,11 @@ export const updateCategoryAction = createAsyncThunk(
   },
 );
 
-export const deleteCategoryAction = createAsyncThunk(
-  "category/deleteCategory",
+export const deleteTagAction = createAsyncThunk(
+  "tag/deleteTag",
   async (id, { rejectWithValue, getState, dispatch }) => {
     try {
-      const { data } = await deleteRequest(`/category/deleteCategory/${id}`);
-
+      const { data } = await deleteRequest(`/tag/deleteTag/${id}`);
       dispatch(resetDeleteAction());
       ToastMessage.successMessage(data?.message);
       return data;
@@ -86,14 +85,14 @@ export const deleteCategoryAction = createAsyncThunk(
   },
 );
 
-//Category Slice
-const categorySlice = createSlice({
-  name: "category",
+//Tag Slice
+const tagSlice = createSlice({
+  name: "tag",
   initialState: {},
 
   extraReducers: (builder) => {
-    //createCategory
-    builder.addCase(createCategoryAction.pending, (state, action) => {
+    //createTag
+    builder.addCase(createTagAction.pending, (state, action) => {
       state.loading = true;
     });
 
@@ -101,67 +100,67 @@ const categorySlice = createSlice({
       state.isCreated = true;
     });
 
-    builder.addCase(createCategoryAction.fulfilled, (state, action) => {
+    builder.addCase(createTagAction.fulfilled, (state, action) => {
       state.loading = undefined;
       state.appError = undefined;
       state.serverError = undefined;
-      state.isCreated = true;
+      state.isCreated = false;
     });
 
-    builder.addCase(createCategoryAction.rejected, (state, action) => {
+    builder.addCase(createTagAction.rejected, (state, action) => {
       state.loading = undefined;
       state.serverError = action.error.message;
       state.appError = action.payload.message;
     });
 
-    //selectAllCategory
-    builder.addCase(selectAllCategoryAction.pending, (state, action) => {
+    //selectAllTag
+    builder.addCase(selectAllTagAction.pending, (state, action) => {
       state.loading = true;
-      state.categoryList = [];
+      state.tagList = [];
       state.appError = undefined;
       state.serverError = undefined;
     });
 
-    builder.addCase(selectAllCategoryAction.fulfilled, (state, action) => {
+    builder.addCase(selectAllTagAction.fulfilled, (state, action) => {
       state.loading = undefined;
-      state.categoryList = action?.payload;
+      state.tagList = action?.payload;
       state.appError = undefined;
       state.serverError = undefined;
-      state.categoryUpdated = undefined;
-      state.categoryCreated = undefined;
+      state.tagUpdated = undefined;
+      state.tagCreated = undefined;
     });
 
-    builder.addCase(selectAllCategoryAction.rejected, (state, action) => {
+    builder.addCase(selectAllTagAction.rejected, (state, action) => {
       state.loading = undefined;
-      state.categoryList = [];
+      state.tagList = [];
       state.serverError = action?.error?.message;
       state.appError = action?.payload?.message;
     });
 
-    //selectCategory
-    builder.addCase(selectCategoryAction.pending, (state, action) => {
+    //selectTag
+    builder.addCase(selectTagAction.pending, (state, action) => {
       state.loading = true;
-      state.category = {};
+      state.tag = {};
       state.appError = undefined;
       state.serverError = undefined;
     });
 
-    builder.addCase(selectCategoryAction.fulfilled, (state, action) => {
+    builder.addCase(selectTagAction.fulfilled, (state, action) => {
       state.loading = undefined;
-      state.category = action?.payload;
+      state.tag = action?.payload;
       state.appError = undefined;
       state.serverError = undefined;
     });
 
-    builder.addCase(selectCategoryAction.rejected, (state, action) => {
+    builder.addCase(selectTagAction.rejected, (state, action) => {
       state.loading = undefined;
-      state.category = {};
+      state.tag = {};
       state.serverError = action?.error?.message;
       state.appError = action?.payload?.message;
     });
 
-    //updateCategory
-    builder.addCase(updateCategoryAction.pending, (state, action) => {
+    //updateTag
+    builder.addCase(updateTagAction.pending, (state, action) => {
       state.loading = true;
     });
 
@@ -169,21 +168,21 @@ const categorySlice = createSlice({
       state.isEdited = true;
     });
 
-    builder.addCase(updateCategoryAction.fulfilled, (state, action) => {
+    builder.addCase(updateTagAction.fulfilled, (state, action) => {
       state.loading = undefined;
       state.appError = undefined;
       state.serverError = undefined;
       state.isEdited = undefined;
     });
 
-    builder.addCase(updateCategoryAction.rejected, (state, action) => {
+    builder.addCase(updateTagAction.rejected, (state, action) => {
       state.loading = undefined;
       state.serverError = action?.error?.message;
       state.appError = action?.payload?.message;
     });
 
-    //deleteCategory
-    builder.addCase(deleteCategoryAction.pending, (state, action) => {
+    //deleteTag
+    builder.addCase(deleteTagAction.pending, (state, action) => {
       state.loading = true;
     });
 
@@ -191,14 +190,14 @@ const categorySlice = createSlice({
       state.isDeleted = true;
     });
 
-    builder.addCase(deleteCategoryAction.fulfilled, (state, action) => {
+    builder.addCase(deleteTagAction.fulfilled, (state, action) => {
       state.loading = undefined;
       state.appError = undefined;
       state.serverError = undefined;
       state.isDeleted = undefined;
     });
 
-    builder.addCase(deleteCategoryAction.rejected, (state, action) => {
+    builder.addCase(deleteTagAction.rejected, (state, action) => {
       state.loading = undefined;
       state.serverError = action?.error?.message;
       state.appError = action?.payload?.message;
@@ -206,4 +205,4 @@ const categorySlice = createSlice({
   },
 });
 
-export default categorySlice.reducer;
+export default tagSlice.reducer;

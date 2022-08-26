@@ -2,11 +2,22 @@
 import axios from "axios";
 
 //Internal import
-import SessionHelper from "../helper/SessionHelper";
-axios.defaults.baseURL = "http://localhost:8080/api/v1";
-axios.defaults.headers.post["Content-Type"] =
-  "application/x-www-form-urlencoded";
+import store from "../redux/store/store";
+import { logoutUserAction } from "../redux/slices/authSlice";
 
-export const axiosHeaders = () => {
-  return { headers: { Authorization: `Bearer ${SessionHelper.getToken()}` } };
+
+// axios.interceptors.response.use(
+//   (response) => {
+//     return response;
+//   },
+//   (error) => {
+//     if (error.response.status === 401) {
+//       store.dispatch(logoutUserAction());
+//     }
+//     return error;
+//   },
+// );
+
+export const axiosHeaders = (accessToken) => {
+  return { headers: { Authorization: `Bearer ${accessToken}` } };
 };
