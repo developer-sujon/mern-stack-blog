@@ -1,4 +1,4 @@
-//external lib imports
+//External Libimports
 import React, { Suspense, lazy } from "react";
 
 //Internal Lib Import

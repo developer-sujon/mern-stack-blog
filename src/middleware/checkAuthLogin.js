@@ -1,4 +1,4 @@
-//external import
+//External import
 const jwt = require("jsonwebtoken");
 const User = require("../model/UserModel");
 

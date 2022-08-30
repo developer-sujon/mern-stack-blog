@@ -1,4 +1,4 @@
-//external import
+//External import
 const mongoose = require("mongoose");
 const ObjectId = require("mongoose").Types.ObjectId;
 const bcrypt = require("bcrypt");
@@ -15,13 +15,13 @@ const sendMailUtility = require("../utils/sendMailUtility");
 const genRand = require("../helper/randGen");
 
 /**
- * @desc Select All User
+ * @desc Select Profile
  * @access public
- * @route /api/v1/user/selectUser
+ * @route /api/v1/user/selectProfile
  * @methud GET
  */
 
-const selectUser = async (req, res) => {
+const selectProfile = async (req, res) => {
   const { userName } = req;
   try {
     const users = await UserModel.aggregate([
@@ -488,7 +488,7 @@ const recoveryPassword = async (req, res) => {
 };
 
 module.exports = {
-  selectUser,
+  selectProfile,
   selectUserProfile,
   updateUser,
   deleteUser,

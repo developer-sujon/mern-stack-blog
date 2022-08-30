@@ -1,4 +1,4 @@
-//external import
+//External import
 import cogoToast from "cogo-toast";
 
 class ToastMessage {

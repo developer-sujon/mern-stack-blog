@@ -1,20 +1,21 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+//External Import
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
 
 //Internal Import
-import { selectAllCategoryAction } from "../../redux/slices/categorySlice";
+import PostRequest from "../../APIRequest/PostRequest";
 import TagDropDown from "../TagDropDown/TagDropDown";
-import { createPostAction } from "../../redux/slices/postSlice";
+import CategoryRequest from "../../APIRequest/CategoryRequest";
 
 const CreatePost = () => {
-  const [currentImage, setCurrentImage] = useState("Choose Image");
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(selectAllCategoryAction());
-  }, [dispatch]);
+    CategoryRequest.selectAllCategoryRequest();
+  }, []);
 
   const store = useSelector((state) => state?.category);
   const { categoryList, loading, appErr, serverErr } = store;
@@ -28,40 +29,24 @@ const CreatePost = () => {
   const formik = useFormik({
     initialValues: {
       title: "",
-      categoryId: "630759a6ae28a05b2e7454b3",
+      categoryId: "630d87a5a13dc87e5ed9e29c",
       description: "",
       postThumbnail: "",
       tagsId: "",
     },
+    validationSchema: postSchema,
     onSubmit: (values) => {
-      const postBody = {
-        title: values?.title,
-        categoryId: values?.categoryId,
-        description: values?.description,
-        postThumbnail: values?.postThumbnail,
-        tagsId: values?.tagsId,
-      };
-
-      console.log(postBody);
-
       let formData = new FormData();
       formData.append("title", values?.title);
-      debugger;
       formData.append("categoryId", values?.categoryId);
-      debugger;
       formData.append("description", values?.description);
-      debugger;
       formData.append("postThumbnail", values?.postThumbnail);
-      debugger;
       formData.append("tagsId", values?.tagsId);
 
-      debugger;
-
-      return false;
-
-      dispatch(createPostAction(postBody));
+      PostRequest.createPostRequest(formData).then((result) => {
+        navigate("/posts");
+      });
     },
-    validationSchema: postSchema,
   });
 
   return (

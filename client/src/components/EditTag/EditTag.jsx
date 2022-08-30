@@ -1,29 +1,24 @@
-//External Import
-import { useEffect, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
-import { AiOutlinePlus } from "react-icons/ai";
+//External import
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import { BsBookmarkCheck } from "react-icons/bs";
-import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import TagRequest from "../../APIRequest/TagRequest";
 
 //Internal Imports
-import {
-  selectTagAction,
-  updateTagAction,
-  deleteTagAction,
-} from "../../redux/slices/tagSlice";
 
 const EditTag = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
-  const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(selectTagAction(id));
-  }, [dispatch]);
+    TagRequest.selectTagRequest(id);
+  }, [id]);
 
   const state = useSelector((state) => state.tag);
-  const { loading, appError, serverError, tag, isEdited, isDeleted } = state;
+  const { tag } = state;
 
   const tagSchema = yup
     .object({
@@ -36,13 +31,19 @@ const EditTag = () => {
     initialValues: {
       name: tag?.name,
     },
-    onSubmit: (values) => {
-      dispatch(updateTagAction({ data: values, id }));
-    },
     validationSchema: tagSchema,
+    onSubmit: (values) => {
+      TagRequest.updateTagRequest({ id, postBody: values }).then((result) => {
+        result && navigate("/tag-list");
+      });
+    },
   });
 
-  if (isEdited || isDeleted) return <Navigate to="/tag-list" />;
+  const removeTag = (id) => {
+    TagRequest.deleteTagRequest(id).then((result) => {
+      result && navigate("/tag-list");
+    });
+  };
 
   return (
     <>
@@ -59,11 +60,7 @@ const EditTag = () => {
               </p>
             </p>
           </div>
-          {appError || serverError ? (
-            <span className="text-red-400 mb-2 capitalize block text-center">
-              {appError || serverError}
-            </span>
-          ) : null}
+
           <form className="mt-8 space-y-6" onSubmit={formik.handleSubmit}>
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="rounded-md shadow-sm -space-y-px">
@@ -99,7 +96,7 @@ const EditTag = () => {
             </div>
           </form>
           <button
-            onClick={() => dispatch(deleteTagAction(id))}
+            onClick={() => removeTag(id)}
             className="group relative w-full flex justify-center my-5 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Delete Tag

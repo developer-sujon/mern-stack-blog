@@ -1,4 +1,4 @@
-//External Lib Import
+//External LibImport
 import React, { useState } from "react";
 
 //Internal Lib Import

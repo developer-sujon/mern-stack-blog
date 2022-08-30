@@ -1,9 +1,9 @@
-//External Import
+//External import
 const userRoutes = require("express").Router();
 
 //Internal Import
 const {
-  selectUser,
+  selectProfile,
   selectUserProfile,
   updateUser,
   deleteUser,
@@ -23,7 +23,7 @@ const {
 } = require("../middleware/multer/uploadPhoto");
 
 //Select User
-userRoutes.get("/selectUser", userAuth, selectUser);
+userRoutes.get("/selectProfile", userAuth, selectProfile);
 
 //Select User By User Name
 userRoutes.get("/selectUserProfile/:userName", selectUserProfile);

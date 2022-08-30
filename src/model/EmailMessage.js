@@ -1,4 +1,4 @@
-//external import
+//External import
 const { model, Schema } = require("mongoose");
 
 const emailMessageSchema = new Schema(

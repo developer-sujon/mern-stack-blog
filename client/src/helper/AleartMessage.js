@@ -1,4 +1,4 @@
-//external import
+//External import
 import Swal from "sweetalert2";
 
 class AleartMessage {

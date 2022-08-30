@@ -1,9 +1,9 @@
-//External  lib import
+External  lib import
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactCodeInput from "react-code-input";
 
-//External lib Import
+//External LibImport
 import ApiRequest from "../../APIRequest/ApiRequest";
 import ToastMessage from "../../helper/ToastMessage";
 import SessionHelper from "../../helper/SessionHelper";

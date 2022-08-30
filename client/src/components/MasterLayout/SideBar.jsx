@@ -1,4 +1,4 @@
-//External Lib  imports
+//External Lib imports
 import React from "react";
 import { AiOutlineFundProjectionScreen } from "react-icons/ai";
 import { BsBarChart, BsEnvelope } from "react-icons/bs";

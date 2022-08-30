@@ -1,4 +1,4 @@
-//External Import
+//External import
 const tagRoutes = require("express").Router();
 
 //Internal Import

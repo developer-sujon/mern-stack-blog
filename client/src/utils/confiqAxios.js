@@ -5,7 +5,6 @@ import axios from "axios";
 import store from "../redux/store/store";
 import { logoutUserAction } from "../redux/slices/authSlice";
 
-
 // axios.interceptors.response.use(
 //   (response) => {
 //     return response;

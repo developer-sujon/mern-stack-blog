@@ -1,4 +1,4 @@
-//external import
+//External import
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
@@ -46,7 +46,7 @@ const registrationUser = async (req, res) => {
 
     delete user._doc.password;
 
-    res.status(201).json(user);
+    res.status(201).json({ message: "User Register Successfull" });
   } catch (e) {
     throw createError(e.message, e.status);
   }

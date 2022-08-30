@@ -1,4 +1,4 @@
-//external import
+//External import
 const nodemailer = require("nodemailer");
 
 const sendMailUtility = async (emailTo, emailText, emailSubject) => {

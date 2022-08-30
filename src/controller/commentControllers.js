@@ -1,4 +1,4 @@
-//External Import
+//External import
 const ObjectId = require("mongoose").Types.ObjectId;
 
 //Internal Import

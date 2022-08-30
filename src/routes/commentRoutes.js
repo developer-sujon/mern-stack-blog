@@ -1,4 +1,4 @@
-//External Import
+//External import
 const commentRoutes = require("express").Router();
 
 //Internal Import

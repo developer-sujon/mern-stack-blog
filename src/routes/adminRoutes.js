@@ -1,4 +1,4 @@
-//External Import
+//External import
 const adminRoutes = require("express").Router();
 
 //Internal Import

@@ -1,4 +1,4 @@
-//External Import
+//External import
 const emailMessageRoutes = require("express").Router();
 
 //Internal Import

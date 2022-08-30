@@ -1,34 +1,24 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { HiOutlineThumbUp, HiOutlineThumbDown } from "react-icons/hi";
 import { AiOutlineEyeInvisible } from "react-icons/ai";
 
 import DateFormatter from "../../utils/DateFormatter";
-import { selectAllPostAction } from "../../redux/slices/postSlice";
-import { selectAllCategoryAction } from "../../redux/slices/categorySlice";
+import PostRequest from "../../APIRequest/PostRequest";
+import CategoryRequest from "../../APIRequest/CategoryRequest";
 
 const PostList = () => {
-  const dispatch = useDispatch();
+  useEffect(() => {
+    PostRequest.selectAllPostRequest();
+  }, []);
 
   useEffect(() => {
-    dispatch(selectAllPostAction());
-  }, [dispatch]);
+    CategoryRequest.selectAllCategoryRequest();
+  }, []);
 
-  useEffect(() => {
-    dispatch(selectAllCategoryAction());
-  }, [dispatch]);
-
-  const category = useSelector((state) => state?.category);
-  const {
-    categoryList,
-    loading: catLoading,
-    appError: catAppError,
-    serverError: catServerError,
-  } = category;
-
-  const post = useSelector((state) => state?.post);
-  const { postLists, loading, appError, serverError, likes, dislikes } = post;
+  const { categoryList } = useSelector((state) => state?.category);
+  const { postList } = useSelector((state) => state?.post);
 
   return (
     <section>
@@ -45,7 +35,7 @@ const PostList = () => {
             </div>
             <div className=" block text-right w-1/2">
               <button
-                onClick={() => dispatch(selectAllPostAction(""))}
+                // onClick={() => dispatch(selectAllPostAction(""))}
                 className="inline-block py-2 px-6 rounded-l-xl rounded-t-xl bg-green-600 hover:bg-green-700 text-gray-50 font-bold leading-loose transition duration-200"
               >
                 View All Posts
@@ -59,13 +49,7 @@ const PostList = () => {
                 Categories
               </h4>
               <ul>
-                {catLoading ? (
-                  "Loding"
-                ) : catAppError || catServerError ? (
-                  <h1>
-                    {catServerError} {catAppError}
-                  </h1>
-                ) : categoryList?.length <= 0 ? (
+                {categoryList?.length <= 0 ? (
                   <h1 className="text-yellow-400 text-lg text-center">
                     No Category Found
                   </h1>
@@ -87,16 +71,12 @@ const PostList = () => {
             </div>
             <div className="flex flex-wrap w-[75%] p-[1rem]">
               <div className="w-full lg:w-3/4 px-3">
-                {appError || serverError ? (
-                  <h1>
-                    {serverError} {appError}
-                  </h1>
-                ) : postLists?.length <= 0 ? (
+                {postList?.length <= 0 ? (
                   <h1 className="text-yellow-400 text-lg text-center">
                     No Post Found
                   </h1>
                 ) : (
-                  postLists?.map((post) => (
+                  postList?.map((post) => (
                     <div
                       key={post.id}
                       className="flex flex-wrap bg-gray-900 -mx-3  lg:mb-6"
@@ -105,8 +85,8 @@ const PostList = () => {
                         <Link to={post?.postThumbnail}>
                           <img
                             className="w-full h-full object-cover rounded"
-                            src={"http://localhost:8080" + post?.postThumbnail}
-                            alt=""
+                            src={post?.postThumbnail}
+                            alt={post?.slug}
                           />
                         </Link>
 

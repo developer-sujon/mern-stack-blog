@@ -1,26 +1,26 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Select from "react-select";
-import { selectAllTagAction } from "../../redux/slices/tagSlice";
 
 //Internal Import
+import TagRequest from "../../APIRequest/TagRequest";
 
 const TagDropDown = (props) => {
-  const dispatch = useDispatch();
-
   useEffect(() => {
-    dispatch(selectAllTagAction());
-  }, [dispatch]);
+    TagRequest.selectAllTagRequest();
+  }, []);
 
   const store = useSelector((state) => state?.tag);
-  const { tagList, loading, appErr, serverErr } = store;
+  const { tagList } = store;
 
-  const allTags = tagList?.map((tag) => {
-    return {
-      label: tag?.name,
-      value: tag?._id,
-    };
-  });
+  const allTags =
+    tagList &&
+    tagList?.map((tag) => {
+      return {
+        label: tag?.name,
+        value: tag?._id,
+      };
+    });
 
   const handleChange = (value) => {
     const list = value.map((v) => {

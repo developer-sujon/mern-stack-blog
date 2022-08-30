@@ -1,4 +1,4 @@
-//external import
+//External import
 const { model, Schema } = require("mongoose");
 
 const tagSchema = new Schema(

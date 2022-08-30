@@ -1,30 +1,23 @@
-//External Import
-import { Navigate, useParams } from "react-router-dom";
-import { AiOutlinePlus } from "react-icons/ai";
+//External import
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { BsBookmarkCheck } from "react-icons/bs";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
 //Internal Imports
-import {
-  selectCategoryAction,
-  updateCategoryAction,
-  deleteCategoryAction,
-} from "../../redux/slices/categorySlice";
-import { useEffect, useState } from "react";
+import CategoryRequest from "../../APIRequest/CategoryRequest";
 
 const EditCategory = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
-  const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(selectCategoryAction(id));
-  }, [dispatch]);
+    CategoryRequest.selectCategoryRequest(id);
+  }, [id]);
 
-  const state = useSelector((state) => state.category);
-  const { loading, appError, serverError, category, isEdited, isDeleted } =
-    state;
+  const { category } = useSelector((state) => state.category);
 
   const categorySchema = yup.object().shape({
     name: yup.string().required("Category Name is required"),
@@ -36,12 +29,20 @@ const EditCategory = () => {
       name: category?.name,
     },
     onSubmit: (values) => {
-      dispatch(updateCategoryAction({ data: values, id }));
+      CategoryRequest.updateCategoryRequest({ id, postBody: values }).then(
+        (result) => {
+          result && navigate("/category-list");
+        },
+      );
     },
     validationSchema: categorySchema,
   });
 
-  if (isEdited || isDeleted) return <Navigate to="/category-list" />;
+  const removeCategory = (id) => {
+    CategoryRequest.deleteCategoryRequest(id).then((result) => {
+      result && navigate("/category-list");
+    });
+  };
 
   return (
     <>
@@ -58,11 +59,7 @@ const EditCategory = () => {
               </p>
             </p>
           </div>
-          {appError || serverError ? (
-            <span className="text-red-400 mb-2 capitalize block text-center">
-              {appError || serverError}
-            </span>
-          ) : null}
+
           <form className="mt-8 space-y-6" onSubmit={formik.handleSubmit}>
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="rounded-md shadow-sm -space-y-px">
@@ -98,7 +95,7 @@ const EditCategory = () => {
             </div>
           </form>
           <button
-            onClick={() => dispatch(deleteCategoryAction(id))}
+            onClick={() => removeCategory(id)}
             className="group relative w-full flex justify-center my-5 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Delete Category

@@ -1,35 +1,31 @@
-//External Import
+//External import
 import { AiOutlinePlus } from "react-icons/ai";
 import { BsBookmarkCheck } from "react-icons/bs";
-import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
-import { Navigate } from "react-router-dom";
 import { useFormik } from "formik";
+import { useNavigate } from "react-router-dom";
 
 //Internal Imports
-import { createCategoryAction } from "../../redux/slices/categorySlice";
+import CategoryRequest from "../../APIRequest/CategoryRequest";
 
 const AddCategory = () => {
-  const store = useSelector((state) => state.category);
-  const { loading, appError, serverError, isCreated } = store;
-
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const categorySchema = yup.object().shape({
-    name: yup.string().required("Name is required"),
+    name: yup.string().required("Category Name is required"),
   });
 
   const formik = useFormik({
     initialValues: {
       name: "",
     },
-    onSubmit: (values) => {
-      dispatch(createCategoryAction(values));
-    },
     validationSchema: categorySchema,
+    onSubmit: (values) => {
+      CategoryRequest.createCategoryRequest(values).then((result) => {
+        result && navigate("/category-list");
+      });
+    },
   });
-
-  if (isCreated) return <Navigate to="/category-list" />;
 
   return (
     <>
@@ -46,11 +42,6 @@ const AddCategory = () => {
               </p>
             </p>
           </div>
-          {appError || serverError ? (
-            <span className="text-red-400 mb-2 capitalize block text-center">
-              {appError || serverError}
-            </span>
-          ) : null}
 
           <form className="mt-8 space-y-6" onSubmit={formik.handleSubmit}>
             <input type="hidden" name="remember" defaultValue="true" />

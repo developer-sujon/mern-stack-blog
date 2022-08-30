@@ -1,4 +1,4 @@
-//External Import
+//External import
 const categoryRoutes = require("express").Router();
 
 //Internal Import

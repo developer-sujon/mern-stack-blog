@@ -1,16 +1,14 @@
-//external lib imports
+//External Libimports
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { registrationUserAction } from "../../redux/slices/authSlice";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+//Internal Import
+import AuthRequest from "../../APIRequest/AuthRequest";
 
 const RegistrationUser = () => {
-  const dispatch = useDispatch();
-  const { loading, appError, serverError, registration } = useSelector(
-    (state) => state.auth,
-  );
+  const navigate = useNavigate();
 
   const registrationSchema = yup.object().shape({
     name: yup.string().required("Name is required"),
@@ -45,10 +43,12 @@ const RegistrationUser = () => {
       password: "",
       confirmPassword: "",
     },
-    onSubmit: (values) => {
-      dispatch(registrationUserAction(values));
-    },
     validationSchema: registrationSchema,
+    onSubmit: (values) => {
+      AuthRequest.registerUserRequest(values).then((result) => {
+        result && navigate("/login");
+      });
+    },
   });
 
   return (
@@ -69,12 +69,6 @@ const RegistrationUser = () => {
             </div>
             <div className="w-full lg:w-1/2 px-4">
               <div className="px-6 lg:px-20 py-12 lg:py-24 bg-gray-600 rounded-lg">
-                {appError || serverError ? (
-                  <span className="text-red-400 mb-2 capitalize">
-                    {appError || serverError}
-                  </span>
-                ) : null}
-                {registration && <Navigate to="/login" replace={true} />}
                 <form onSubmit={formik.handleSubmit}>
                   <h3 className="mb-10 text-2xl text-white font-bold font-heading">
                     Register Account–
@@ -354,12 +348,8 @@ const RegistrationUser = () => {
                   <button
                     type="submit"
                     className="py-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full transition duration-200"
-                    disabled={loading}
                   >
                     Register
-                    {loading && (
-                      <span class="inline-block w-3 h-3 border-[3px] rounded-full border-t-black/10 border-r-black/10 animate-spin ml-2"></span>
-                    )}
                   </button>
                 </form>
               </div>

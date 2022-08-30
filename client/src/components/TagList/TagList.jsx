@@ -1,29 +1,20 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { BsPencil } from "react-icons/bs";
-
-import { selectAllTagAction } from "../../redux/slices/tagSlice";
+import TagRequest from "../../APIRequest/TagRequest";
 
 const TagList = () => {
-  const dispatch = useDispatch();
-
   useEffect(() => {
-    dispatch(selectAllTagAction());
+    TagRequest.selectAllTagRequest();
   }, []);
 
   const store = useSelector((state) => state?.tag);
-  const { tagList, loading, appErr, serverErr } = store;
+  const { tagList } = store;
 
   return (
     <div className="w-full max-w-screen-xl mx-auto mt-5">
-      {loading ? (
-        <h2 className="text-center text-3xl text-green-800">Loading</h2>
-      ) : appErr || serverErr ? (
-        <h2 className="text-center text-3xl text-red-600">
-          {appErr} {serverErr}
-        </h2>
-      ) : tagList?.length <= 0 ? (
+      {tagList?.length <= 0 ? (
         <h2 className="text-center text-3xl text-green-800">
           No category Found
         </h2>

@@ -1,4 +1,4 @@
-//External Import
+//External import
 const ObjectId = require("mongoose").Types.ObjectId;
 const fs = require("fs").promises;
 const Filter = require("bad-words");
@@ -127,10 +127,6 @@ const selectAllPost = async (req, res) => {
         },
       },
     ]);
-
-    if (!posts.length > 0) {
-      throw createError("Posts Not Found", 404);
-    }
 
     res.json(posts);
   } catch (e) {

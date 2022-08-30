@@ -1,8 +1,8 @@
-//external  lib import
+External  lib import
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-//External lib Import
+//External LibImport
 import ApiRequest from "../../APIRequest/ApiRequest";
 import FormValidation from "../../helper/FormValidation";
 import SessionHelper from "../../helper/SessionHelper";

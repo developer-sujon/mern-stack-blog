@@ -1,4 +1,4 @@
-//External Import
+//External import
 const ObjectId = require("mongoose").Types.ObjectId;
 const Filter = require("bad-words");
 

@@ -1,0 +1,14 @@
+@import "tailwindcss/utilities";
+@layer utilities {
+  .animation-delay-1 {
+    animation-delay: 1.15s;
+  }
+}
+
+.loading__overlay {
+  @apply absolute block h-full top-0 left-0 right-0 bottom-0 cursor-pointer z-[500000];
+}
+
+.indeterminate {
+  @apply bg-[#cb0c9f] before:h-1 before:fixed before:top-0 before:left-0 before:bottom-0 before:z-[-100] before:animate-indeterminate before:bg-inherit after:h-1 after:fixed after:top-0 after:left-0 after:bottom-0 after:z-[-100] after:animate-indeterminateShort after:bg-inherit after:animation-delay-1;
+}

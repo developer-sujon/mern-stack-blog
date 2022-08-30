@@ -1,4 +1,4 @@
-//external  lib import
+//External  lib import
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";

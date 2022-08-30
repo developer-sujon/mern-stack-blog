@@ -1,29 +1,22 @@
+//External import
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { BsPencil } from "react-icons/bs";
 
-import { selectAllCategoryAction } from "../../redux/slices/categorySlice";
+//Internal Import
+import CategoryRequest from "../../APIRequest/CategoryRequest";
 
 const CategoryList = () => {
-  const dispatch = useDispatch();
-
   useEffect(() => {
-    dispatch(selectAllCategoryAction());
-  }, [dispatch]);
+    CategoryRequest.selectAllCategoryRequest();
+  }, []);
 
-  const store = useSelector((state) => state?.category);
-  const { categoryList, loading, appErr, serverErr } = store;
+  const { categoryList } = useSelector((state) => state?.category);
 
   return (
     <div className="w-full max-w-screen-xl mx-auto mt-5">
-      {loading ? (
-        <h2 className="text-center text-3xl text-green-800">Loading</h2>
-      ) : appErr || serverErr ? (
-        <h2 className="text-center text-3xl text-red-600">
-          {appErr} {serverErr}
-        </h2>
-      ) : categoryList?.length <= 0 ? (
+      {categoryList?.length <= 0 ? (
         <h2 className="text-center text-3xl text-green-800">
           No category Found
         </h2>

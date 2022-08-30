@@ -1,4 +1,4 @@
-//External Import
+//External import
 const postRoutes = require("express").Router();
 
 //Internal Import

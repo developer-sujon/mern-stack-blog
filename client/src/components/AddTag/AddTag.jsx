@@ -1,19 +1,15 @@
-//External Import
+//External import
 import { AiOutlinePlus } from "react-icons/ai";
 import { BsBookmarkCheck } from "react-icons/bs";
-import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { Navigate } from "react-router-dom";
 
 //Internal Imports
-import { createTagAction } from "../../redux/slices/tagSlice";
+import TagRequest from "../../APIRequest/TagRequest";
+import { useNavigate } from "react-router-dom";
 
 const AddTag = () => {
-  const store = useSelector((state) => state.tag);
-  const { loading, appError, serverError, isCreated } = store;
-
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const tagSchema = yup.object().shape({
     name: yup.string().required("Tag Name is required"),
@@ -23,13 +19,13 @@ const AddTag = () => {
     initialValues: {
       name: "",
     },
-    onSubmit: (values) => {
-      dispatch(createTagAction(values));
-    },
     validationSchema: tagSchema,
+    onSubmit: (values) => {
+      TagRequest.createTagRequest(values).then((result) => {
+        result && navigate("/tag-list");
+      });
+    },
   });
-
-  if (isCreated) return <Navigate to="/tag-list" />;
 
   return (
     <>
@@ -46,11 +42,6 @@ const AddTag = () => {
               </p>
             </p>
           </div>
-          {appError || serverError ? (
-            <span className="text-red-400 mb-2 capitalize block text-center">
-              {appError || serverError}
-            </span>
-          ) : null}
 
           <form className="mt-8 space-y-6" onSubmit={formik.handleSubmit}>
             <input type="hidden" name="remember" defaultValue="true" />

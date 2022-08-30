@@ -1,20 +1,15 @@
-//external lib imports
+//External Libimports
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-//enternel lib imports
+//Internal Import
+import AuthRequest from "../../APIRequest/AuthRequest";
 import poster from "../../assets/images/poster.png";
-import { loginUserAction } from "../../redux/slices/authSlice";
 
 const LoginUser = () => {
-  const { loading, appError, serverError, roles } = useSelector(
-    (state) => state.auth,
-  );
-
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const loginSchema = yup.object().shape({
     email: yup
@@ -29,10 +24,10 @@ const LoginUser = () => {
       email: "",
       password: "",
     },
-    onSubmit: (values) => {
-      dispatch(loginUserAction(values));
-    },
     validationSchema: loginSchema,
+    onSubmit: (values) => {
+      AuthRequest.loginUserRequest(values);
+    },
   });
 
   return (
@@ -49,12 +44,6 @@ const LoginUser = () => {
           <div className="flex flex-wrap items-center -mx-4">
             <div className="w-full lg:w-2/5 px-4">
               <div className="px-6 lg:px-12 py-12 lg:py-24 bg-white shadow-lg rounded-lg">
-                {appError || serverError ? (
-                  <span className="text-red-400 mb-2 capitalize">
-                    {appError || serverError}
-                  </span>
-                ) : null}
-                {roles && <Navigate to="/" replace={true} />}
                 <form onSubmit={formik.handleSubmit}>
                   <h3 className="mb-10 text-2xl font-bold font-heading">
                     Login to your Account
@@ -126,12 +115,8 @@ const LoginUser = () => {
                   <button
                     type="submit"
                     className="py-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full transition duration-200"
-                    disabled={loading}
                   >
                     Login
-                    {loading && (
-                      <span class="inline-block w-3 h-3 border-[3px] rounded-full border-t-black/10 border-r-black/10 animate-spin ml-2"></span>
-                    )}
                   </button>
                 </form>
               </div>

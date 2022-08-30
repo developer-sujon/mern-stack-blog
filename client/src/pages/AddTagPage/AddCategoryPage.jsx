@@ -1,4 +1,4 @@
-//External Import
+//External import
 import React, { lazy, Suspense } from "react";
 
 //Enternal Import

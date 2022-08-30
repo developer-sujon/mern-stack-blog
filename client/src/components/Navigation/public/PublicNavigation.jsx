@@ -1,4 +1,4 @@
-//External Import
+//External import
 import { Disclosure } from "@headlessui/react";
 import { Link } from "react-router-dom";
 import {
