@@ -16,7 +16,7 @@ const PostDetails = () => {
   const { post } = useSelector((state) => state?.post);
 
   useEffect(() => {
-    PostRequest.selectPostRequest(slug);
+    PostRequest.selectPostRequestBySlug(slug);
   }, [slug]);
 
   //Get login user
@@ -68,7 +68,7 @@ const PostDetails = () => {
                   {post?.description}
                   {isCreatedBy ? (
                     <p class="flex">
-                      <Link to={`/update-post/${post?._id}`} class="p-3">
+                      <Link to={`/edit-post/${post?._id}`} class="p-3">
                         <BsPencil class="h-8 mt-3 text-yellow-300" />
                       </Link>
                       <button

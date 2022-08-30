@@ -75,7 +75,9 @@ const resizePost = async (req, res, next) => {
       .resize(500, 500)
       .toFormat("jpeg")
       .jpeg({ quality: 90 })
-      .toFile(path.join(`public/uploads/images/posts/${req.file.filename}`));
+      .toFile(
+        path.join(`client/public/uploads/images/posts/${req.file.filename}`),
+      );
 
     req.file.postThumbnail = `/uploads/images/posts/${req.file.filename}`;
 

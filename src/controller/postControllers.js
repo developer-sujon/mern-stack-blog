@@ -1,6 +1,6 @@
 //External import
 const ObjectId = require("mongoose").Types.ObjectId;
-const fs = require("fs").promises;
+const fs = require("fs");
 const Filter = require("bad-words");
 
 //Internal Import
@@ -227,6 +227,91 @@ const selectPostBySlug = async (req, res) => {
 };
 
 /**
+ * @desc Select Post
+ * @access private
+ * @route /api/v1/post/selectPost/:id
+ * @methud GET
+ */
+
+const selectPost = async (req, res) => {
+  const { id } = req.params;
+  try {
+    let post = await PostModel.aggregate([{ $match: { _id: ObjectId(id) } }]);
+
+    if (!post.length > 0) {
+      throw createError("Post Not Found", 404);
+    }
+
+    await PostModel.updateOne(
+      { _id: ObjectId(id) },
+      { $inc: { numView: 1 } },
+      { new: true },
+    );
+
+    post = await PostModel.aggregate([
+      {
+        $match: {
+          _id: ObjectId(id),
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "likes",
+          foreignField: "_id",
+          as: "likes",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "disLikes",
+          foreignField: "_id",
+          as: "disLikes",
+        },
+      },
+
+      {
+        $lookup: {
+          from: "tags",
+          localField: "tagsId",
+          foreignField: "_id",
+          as: "tags",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $project: {
+          title: 1,
+          postThumbnail: 1,
+          slug: 1,
+          description: 1,
+          likes: { userName: 1 },
+          disLikes: { userName: 1 },
+          tagsId: 1,
+          categoryId: 1,
+          isLike: 1,
+          isDisLike: 1,
+          numView: 1,
+          user: { userName: 1, avatar: 1, _id: 1 },
+        },
+      },
+    ]);
+
+    res.json(post);
+  } catch (e) {
+    throw createError(e.message, e.status);
+  }
+};
+
+/**
  * @desc Update Post
  * @access private
  * @route /api/v1/post/updatePost/:id
@@ -267,8 +352,11 @@ const updatePost = async (req, res) => {
       );
     }
 
-    if (req?.file?.postThumbnail) {
-      await fs.unlink("public" + post[0].postThumbnail);
+    if (
+      req?.file?.postThumbnail &&
+      fs.existsSync("client/public" + post[0].postThumbnail)
+    ) {
+      fs.unlinkSync("client/public" + post[0].postThumbnail);
     }
 
     await PostModel.findByIdAndUpdate(id, {
@@ -300,7 +388,10 @@ const deletePost = async (req, res) => {
       throw createError("Post Not Found", 404);
     }
 
-    await fs.unlink("public" + post[0].postThumbnail);
+    if (fs.existsSync("client/public" + post[0].postThumbnail)) {
+      fs.unlinkSync("client/public" + post[0].postThumbnail);
+    }
+
     await PostModel.findOneAndDelete(id);
 
     res.json({ message: "Post Delete Successfull" });
@@ -439,6 +530,7 @@ module.exports = {
   createPost,
   selectAllPost,
   selectPostBySlug,
+  selectPost,
   updatePost,
   deletePost,
   likePost,

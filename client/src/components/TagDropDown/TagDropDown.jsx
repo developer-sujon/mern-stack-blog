@@ -41,6 +41,7 @@ const TagDropDown = (props) => {
       onChange={handleChange}
       onBlur={handleBlur}
       options={allTags}
+      defaultValue={[allTags[0], allTags[1]]}
     />
   );
 };

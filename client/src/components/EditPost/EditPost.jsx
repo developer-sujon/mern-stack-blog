@@ -3,37 +3,44 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 //Internal Import
 import PostRequest from "../../APIRequest/PostRequest";
 import TagDropDown from "../TagDropDown/TagDropDown";
 import CategoryRequest from "../../APIRequest/CategoryRequest";
 
-const CreatePost = () => {
+const EditPost = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
+
+  useEffect(() => {
+    PostRequest.selectPostRequest(id);
+  }, [id]);
 
   useEffect(() => {
     CategoryRequest.selectAllCategoryRequest();
-  }, []);
+  }, [id]);
 
   const store = useSelector((state) => state?.category);
   const { categoryList } = store;
+
+  const { post } = useSelector((state) => state?.post);
 
   const postSchema = yup.object().shape({
     title: yup.string().required("Post Title is required"),
     categoryId: yup.string().required("Post Category Name is required"),
     description: yup.string().required("Post Description is required"),
-    postThumbnail: yup.string().required("Post Post Thumbnail is required"),
   });
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      title: "",
-      categoryId: "630d87a5a13dc87e5ed9e29c",
-      description: "",
-      postThumbnail: "",
-      tagsId: "",
+      title: post?.title,
+      categoryId: post?.categoryId,
+      description: post?.description,
+      postThumbnail: post?.postThumbnail,
+      tagsId: post?.tagsId?.toString(),
     },
     validationSchema: postSchema,
     onSubmit: (values) => {
@@ -44,9 +51,11 @@ const CreatePost = () => {
       formData.append("postThumbnail", values?.postThumbnail);
       formData.append("tagsId", values?.tagsId);
 
-      PostRequest.createPostRequest(formData).then((result) => {
-        navigate("/posts");
-      });
+      PostRequest.updatePostRequest({ id, postBody: formData }).then(
+        (result) => {
+          navigate("/posts");
+        },
+      );
     },
   });
 
@@ -54,7 +63,7 @@ const CreatePost = () => {
     <div className="min-h-screen bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-300">
-          Create Post
+          Update Post
         </h2>
 
         <p className="mt-2 text-center text-sm text-gray-600">
@@ -174,4 +183,4 @@ const CreatePost = () => {
   );
 };
 
-export default CreatePost;
+export default EditPost;

@@ -40,12 +40,28 @@ class PostRequest {
     }
   }
 
-  static async selectPostRequest(id) {
+  static async selectPostRequestBySlug(slug) {
     store.dispatch(setLoading());
     try {
       const { data } = await RestClient.getRequest(
-        "post/selectPostBySlug/" + id,
+        "post/selectPostBySlug/" + slug,
       );
+
+      store.dispatch(setPost(data?.[0]));
+      store.dispatch(removeLoading());
+      return true;
+    } catch (err) {
+      store.dispatch(removeLoading());
+      const error = err?.response?.data?.message || "Something Went Wrong";
+      ToastMessage.errorMessage(error);
+      return false;
+    }
+  }
+
+  static async selectPostRequest(id) {
+    store.dispatch(setLoading());
+    try {
+      const { data } = await RestClient.getRequest("post/selectPost/" + id);
 
       store.dispatch(setPost(data?.[0]));
       store.dispatch(removeLoading());

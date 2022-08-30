@@ -37,6 +37,8 @@ const selectProfile = async (req, res) => {
           followes: 1,
           following: 1,
           avatar: 1,
+          accountStatus: 1,
+          createdAt: 1,
         },
       },
     ]);

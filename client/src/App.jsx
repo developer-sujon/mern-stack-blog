@@ -2,6 +2,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
 
+//Enternel lib imports
 import AddCategoryPage from "./pages/AddCategoryPage/AddCategoryPage";
 import CategoryPage from "./pages/CategoryPage/CategoryPage";
 import EditCategoryPage from "./pages/EditCategoryPage/EditCategoryPage";
@@ -10,6 +11,9 @@ import TagPage from "./pages/TagPage/CategoryPage";
 import EditTagPage from "./pages/EditTagPage/EditTagPage";
 import CreatePostPage from "./pages/CreatePostPage/CreatePostPage";
 import PostPage from "./pages/PostPage/PostPage";
+import EditPostPage from "./pages/EditPostPage/EditPostPage";
+import ProfilePage from "./pages/ProfilePage/ProfilePage";
+
 import HomePage from "./pages/HomePage/HomePage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
@@ -19,7 +23,6 @@ import PostDetailsPage from "./pages/PostDetailsPage/PostDetailsPage";
 import AdminRoutes from "./private/AdminRoutes";
 import PrivateRoutes from "./private/PrivateRoutes";
 
-//Enternel lib imports
 const App = () => {
   const auth = useSelector((state) => state.auth);
   const accessToken = auth?.accessToken;
@@ -42,6 +45,8 @@ const App = () => {
             <Route path="create-post" element={<CreatePostPage />} />
             <Route path="posts" element={<PostPage />} />
             <Route path="posts/:slug" element={<PostDetailsPage />} />
+            <Route path="edit-post/:id" element={<EditPostPage />} />
+            <Route path="profile" element={<ProfilePage />} />
 
             <Route element={<AdminRoutes />}>
               <Route path="add-category" element={<AddCategoryPage />} />
@@ -49,7 +54,7 @@ const App = () => {
               <Route path="edit-category/:id" element={<EditCategoryPage />} />
               <Route path="add-tag" element={<AddTagPage />} />
               <Route path="tag-list" element={<TagPage />} />
-              <Route path="edit-tag/:id" element={<EditTagPage />} />
+              <Route path="edit-tag/:slug" element={<EditTagPage />} />
             </Route>
             <Route path="*" element={<NotFoundPage />} />
           </Route>

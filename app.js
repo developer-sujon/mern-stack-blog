@@ -64,18 +64,8 @@ const DB_OPTIONS = {
 connectDB(MONGODB_CONNECTION_URL, DB_OPTIONS);
 
 //static file
-app.use(express.static("public"));
 
-// app.use(express.static("client/build"));
-
-app.post("/api/v1/upload", (req, res) => {
-  upload(req, res, (err) => {
-    if (err) {
-      res.status(400).send("Something went wrong!");
-    }
-    res.send(req.file);
-  });
-});
+app.use(express.static("client/build"));
 
 // Routing Implement
 app.use("/api/v1", routes);
