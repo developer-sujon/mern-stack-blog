@@ -13,22 +13,21 @@ const {
   disLikePost,
   selectPost,
 } = require("../controller/postControllers");
-const { imageUpload, resizePost } = require("../middleware/multer/uploadPhoto");
+const { imageUpload } = require("../middleware/multer/uploadPhoto");
 
 //Create Post
 postRoutes.post(
   "/createPost",
   userAuth,
   imageUpload.single("postThumbnail"),
-  resizePost,
   createPost,
 );
 
 //Select Posts
-postRoutes.get("/selectAllPost", userAuth, selectAllPost);
+postRoutes.get("/selectAllPost", selectAllPost);
 
 //Select Posts By Slug
-postRoutes.get("/selectPostBySlug/:slug", userAuth, selectPostBySlug);
+postRoutes.get("/selectPostBySlug/:slug", selectPostBySlug);
 
 //Select Post
 postRoutes.get("/selectPost/:id", userAuth, selectPost);
@@ -38,7 +37,6 @@ postRoutes.patch(
   "/updatePost/:id",
   userAuth,
   imageUpload.single("postThumbnail"),
-  resizePost,
   updatePost,
 );
 

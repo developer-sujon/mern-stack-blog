@@ -1,9 +1,27 @@
 //External import
 const mongoose = require("mongoose");
+const { createError } = require("../helper/errorHandler");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 //internal import
 const UserModel = require("../model/UserModel");
+
+/**
+ * @desc Select All User
+ * @access public
+ * @route /api/v1/user/selectAllUser
+ * @methud GET
+ */
+
+const selectAllUser = async (req, res) => {
+  try {
+    const user = await UserModel.aggregate([{ $match: { roles: "USER" } }]);
+
+    res.json(user);
+  } catch (e) {
+    throw createError(e.message, e.status);
+  }
+};
 
 /**
  * @desc Block User
@@ -59,4 +77,4 @@ const unBlockUser = async (req, res) => {
   }
 };
 
-module.exports = { blockUser, unBlockUser };
+module.exports = { selectAllUser, blockUser, unBlockUser };

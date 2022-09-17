@@ -1,48 +1,29 @@
 //Internal Import
-import store from "../redux/store/store";
-import ToastMessage from "../helper/ToastMessage";
-import RestClient from "./RestClient";
-import { setLoading, removeLoading } from "../redux/slices/loaderSlice";
-import { login } from "../redux/slices/authSlice";
 import SessionHelper from "../helper/SessionHelper";
+import ToastMessage from "../helper/ToastMessage";
+import { SetLogin } from "../redux/slices/AuthSlice";
+import store from "../redux/store/store";
+import RestClient from "./RestClient";
 
 class AuthRequest {
-  static async registerUserRequest(postBody) {
-    store.dispatch(setLoading());
-    try {
-      const { data } = await RestClient.postRequest(
-        "/auth/registrationUser",
-        postBody,
-      );
+  static async RegisterUser(postBody) {
+    const { data } = await RestClient.postRequest(
+      "/Auth/RegisterUser",
+      postBody,
+    );
+    if (data) {
       ToastMessage.successMessage(data?.message);
-      store.dispatch(removeLoading());
+      SessionHelper.SetVerifyEmail(postBody.Email);
       return true;
-    } catch (err) {
-      store.dispatch(removeLoading());
-      const error = err?.response?.data?.message || "Something Went Wrong";
-      ToastMessage.errorMessage(error);
-      return false;
     }
   }
 
-  static async loginUserRequest(postBody) {
-    store.dispatch(setLoading());
-    try {
-      const { data } = await RestClient.postRequest(
-        "/auth/loginUser",
-        postBody,
-      );
-      SessionHelper.setToken(data?.accessToken);
-      SessionHelper.setUserDetails(data?.user);
-      store.dispatch(login(data));
+  static async LoginUser(postBody) {
+    const { data } = await RestClient.postRequest("/Auth/LoginUser", postBody);
+    if (data) {
+      store.dispatch(SetLogin(data?.accessToken));
       ToastMessage.successMessage("User Login Successfull");
-      store.dispatch(removeLoading());
       return true;
-    } catch (err) {
-      store.dispatch(removeLoading());
-      const error = err?.response?.data?.message || "Something Went Wrong";
-      ToastMessage.errorMessage(error);
-      return false;
     }
   }
 }

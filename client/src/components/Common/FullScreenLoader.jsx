@@ -2,10 +2,10 @@
 import { useSelector } from "react-redux";
 
 const FullScreenLoader = () => {
-  const { isLoading } = useSelector((state) => state.loader);
+  const { IsLoading } = useSelector((state) => state.Loader);
 
   return (
-    <div className={isLoading ? "loading__overlay" : "hidden"}>
+    <div className={IsLoading ? "loading__overlay" : "hidden"}>
       <div className="indeterminate"></div>
     </div>
   );

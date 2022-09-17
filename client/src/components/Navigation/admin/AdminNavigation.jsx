@@ -12,7 +12,7 @@ import {
 } from "react-icons/ai";
 
 import { BsBookmarkCheck } from "react-icons/bs";
-import { logOut } from "../../../redux/slices/authSlice";
+import { SetLogout } from "../../../redux/slices/AuthSlice";
 
 //Internal Imports
 
@@ -100,7 +100,7 @@ const AdminNavigation = ({ user }) => {
                   <button
                     type="button"
                     className="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
-                    onClick={() => dispatch(logOut())}
+                    onClick={() => dispatch(SetLogout())}
                   >
                     <AiOutlineLogout
                       className="-ml-1 mr-2 h-5 w-5"
@@ -140,15 +140,15 @@ const AdminNavigation = ({ user }) => {
                             {userNavigation.map((item) => (
                               <Menu.Item key={item.name}>
                                 {({ active }) => (
-                                  <a
-                                    href={item.href}
+                                  <Link
+                                    to={item.href}
                                     className={classNames(
                                       active ? "bg-gray-100" : "",
                                       "block px-4 py-2 text-sm text-gray-700",
                                     )}
                                   >
                                     {item.name}
-                                  </a>
+                                  </Link>
                                 )}
                               </Menu.Item>
                             ))}
@@ -204,13 +204,13 @@ const AdminNavigation = ({ user }) => {
               </div>
               <div className="mt-3 px-2 space-y-1 sm:px-3">
                 {userNavigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
-                    href={item.href}
+                    to={item.href}
                     className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>

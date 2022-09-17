@@ -1,21 +1,48 @@
 class SessionHelper {
-  static setToken(accessToken) {
+  static SetToken(accessToken) {
     localStorage.setItem("accessToken", accessToken);
   }
-  static getToken() {
-    return localStorage.getItem("accessToken") || null;
+  static GetToken() {
+    return localStorage.getItem("accessToken");
   }
-  static removeToken() {
+  static RemoveToken() {
     return localStorage.removeItem("accessToken");
   }
-  static setUserDetails(user) {
-    localStorage.setItem("user", JSON.stringify(user));
+  static SetUserDetails(User) {
+    localStorage.setItem("User", JSON.stringify(User));
   }
-  static getUserDetails() {
-    return JSON.parse(localStorage.getItem("user")) || null;
+  static GetUserDetails() {
+    return JSON.parse(localStorage.getItem("User"));
   }
-  static removeUserDetails() {
-    return localStorage.removeItem("user");
+  static RemoveUserDetails() {
+    return localStorage.removeItem("User");
+  }
+  static SetOtpEmail(Email) {
+    return localStorage.setItem("OTPEmail", Email);
+  }
+  static GetOtpEmail() {
+    return localStorage.getItem("OTPEmail");
+  }
+  static SetOtpCode(Otp) {
+    return localStorage.setItem("OTPCode", Otp);
+  }
+  static GetOtpCode() {
+    return localStorage.getItem("OTPCode");
+  }
+
+  static SetVerifyEmail(Email) {
+    return localStorage.setItem("VerifyEmail", Email);
+  }
+  static GetVerifyEmail() {
+    return localStorage.getItem("VerifyEmail");
+  }
+
+  static ResetStorage() {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("User");
+    localStorage.removeItem("OTPEmail");
+    localStorage.removeItem("OTPCode");
+    return true;
   }
 }
 

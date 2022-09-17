@@ -1,32 +1,98 @@
 //External import
 import axios from "axios";
 import SessionHelper from "../helper/SessionHelper";
+import ToastMessage from "../helper/ToastMessage";
+import { SetLogout } from "../redux/slices/AuthSlice";
+import { RemoveLoading, SetLoading } from "../redux/slices/LoaderSlice";
+import { RemoveUserDetails } from "../redux/slices/UserSlice";
+import store from "../redux/store/store";
 
-//Internal Import
-
-//axios default setting
-axios.defaults.baseURL = "http://localhost:8080/api/v1";
+//Axios default setting
+axios.defaults.baseURL = "/api/v1";
 axios.defaults.headers.post["Content-Type"] =
   "application/x-www-form-urlencoded";
 
-const axiosHeaders = {
-  headers: {
-    Authorization: `Bearer ${SessionHelper.getToken()}`,
-  },
+function axiosHeaders() {
+  axios.defaults.headers.common["Authorization"] =
+    "Bearer " + SessionHelper.GetToken();
+}
+
+const ResponseReturn = (response) => {
+  store.dispatch(RemoveLoading());
+  return response;
+};
+
+const ErrorReturn = (error) => {
+  store.dispatch(RemoveLoading());
+  if (error.response.status === 500) {
+    ToastMessage.errorMessage("Sorry, Something went wrong");
+  } else if (error.response.status === 401) {
+    ToastMessage.errorMessage(error.response.data.message);
+    store.dispatch(SetLogout());
+    store.dispatch(RemoveUserDetails());
+  } else {
+    ToastMessage.errorMessage(error.response.data.message);
+  }
+
+  return false;
 };
 
 class RestClient {
   static async getRequest(url) {
-    return await axios.get(url, axiosHeaders);
+    store.dispatch(SetLoading());
+    return await axios
+      .get(url, axiosHeaders())
+      .then((response) => {
+        return ResponseReturn(response);
+      })
+      .catch((error) => {
+        return ErrorReturn(error);
+      });
   }
   static async postRequest(url, postBody) {
-    return await axios.post(url, postBody, axiosHeaders);
+    store.dispatch(SetLoading());
+    return await axios
+      .post(url, postBody, axiosHeaders())
+      .then((response) => {
+        return ResponseReturn(response);
+      })
+      .catch((error) => {
+        store.dispatch(RemoveLoading());
+        return ErrorReturn(error);
+      });
   }
   static async updateRequest(url, postBody) {
-    return await axios.patch(url, postBody, axiosHeaders);
+    store.dispatch(SetLoading());
+    return await axios
+      .patch(url, postBody, axiosHeaders())
+      .then((response) => {
+        return ResponseReturn(response);
+      })
+      .catch((error) => {
+        return ErrorReturn(error);
+      });
+  }
+  static async putRequest(url, postBody) {
+    store.dispatch(SetLoading());
+    return await axios
+      .put(url, postBody, axiosHeaders())
+      .then((response) => {
+        return ResponseReturn(response);
+      })
+      .catch((error) => {
+        return ErrorReturn(error);
+      });
   }
   static async deleteRequest(url) {
-    return await axios.delete(url, axiosHeaders);
+    store.dispatch(SetLoading());
+    return await axios
+      .delete(url, axiosHeaders())
+      .then((response) => {
+        return ResponseReturn(response);
+      })
+      .catch((error) => {
+        return ErrorReturn(error);
+      });
   }
 }
 

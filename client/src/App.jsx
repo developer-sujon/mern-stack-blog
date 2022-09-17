@@ -20,17 +20,21 @@ import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
 import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
 import FullScreenLoader from "./components/Common/FullScreenLoader";
 import PostDetailsPage from "./pages/PostDetailsPage/PostDetailsPage";
-import AdminRoutes from "./private/AdminRoutes";
-import PrivateRoutes from "./private/PrivateRoutes";
+import UsersListPage from "./pages/UsersListPage/UsersListPage";
+import SendEmailPage from "./pages/SendEmailPage/SendEmailPage";
+import OtherProfilePage from "./pages/OtherProfilePage/OtherProfilePage";
 
 const App = () => {
-  const auth = useSelector((state) => state.auth);
-  const accessToken = auth?.accessToken;
+  const { accessToken } = useSelector((state) => state.Auth);
+
+  const { UserDetails } = useSelector((state) => state.User);
+  const roles = UserDetails?.roles?.[0];
 
   return (
     <>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<HomePage />} />
           <Route
             path="/login"
             element={accessToken ? <Navigate to="/" /> : <LoginPage />}
@@ -39,25 +43,127 @@ const App = () => {
             path="/registration"
             element={accessToken ? <Navigate to="/" /> : <RegistrationPage />}
           />
-          <Route path="/" element={<HomePage />} />
-
-          <Route element={<PrivateRoutes />}>
-            <Route path="create-post" element={<CreatePostPage />} />
-            <Route path="posts" element={<PostPage />} />
-            <Route path="posts/:slug" element={<PostDetailsPage />} />
-            <Route path="edit-post/:id" element={<EditPostPage />} />
-            <Route path="profile" element={<ProfilePage />} />
-
-            <Route element={<AdminRoutes />}>
-              <Route path="add-category" element={<AddCategoryPage />} />
-              <Route path="category-list" element={<CategoryPage />} />
-              <Route path="edit-category/:id" element={<EditCategoryPage />} />
-              <Route path="add-tag" element={<AddTagPage />} />
-              <Route path="tag-list" element={<TagPage />} />
-              <Route path="edit-tag/:slug" element={<EditTagPage />} />
-            </Route>
-            <Route path="*" element={<NotFoundPage />} />
-          </Route>
+          <Route
+            path="/create-post"
+            element={
+              accessToken ? <CreatePostPage /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/posts"
+            element={accessToken ? <PostPage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/posts/:slug"
+            element={
+              accessToken ? <PostDetailsPage /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/profile"
+            element={accessToken ? <ProfilePage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/profile/:userName"
+            element={
+              accessToken ? <OtherProfilePage /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/posts/:slug"
+            element={
+              accessToken ? <PostDetailsPage /> : <Navigate to="/login" />
+            }
+          />
+          <Route
+            path="/edit-post/:id"
+            element={accessToken ? <EditPostPage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/profile"
+            element={accessToken ? <ProfilePage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/add-category"
+            element={
+              accessToken && roles === "ADMIN" ? (
+                <AddCategoryPage />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/category-list"
+            element={
+              accessToken && roles === "ADMIN" ? (
+                <CategoryPage />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/edit-category/:id"
+            element={
+              accessToken && roles === "ADMIN" ? (
+                <EditCategoryPage />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/add-tag"
+            element={
+              accessToken && roles === "ADMIN" ? (
+                <AddTagPage />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/tag-list"
+            element={
+              accessToken && roles === "ADMIN" ? (
+                <TagPage />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/edit-tag/:id"
+            element={
+              accessToken && roles === "ADMIN" ? (
+                <EditTagPage />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              accessToken && roles === "ADMIN" ? (
+                <UsersListPage />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/send-email/:email"
+            element={
+              accessToken ? (
+                <SendEmailPage />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
       <FullScreenLoader />

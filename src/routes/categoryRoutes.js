@@ -2,7 +2,7 @@
 const categoryRoutes = require("express").Router();
 
 //Internal Import
-const { userAuth } = require("../middleware/checkAuthLogin");
+const { userAuth, adminAuth } = require("../middleware/checkAuthLogin");
 const {
   createCategory,
   selectAllCategory,
@@ -12,18 +12,28 @@ const {
 } = require("../controller/categoryControllers");
 
 //Create Category
-categoryRoutes.post("/createCategory", userAuth, createCategory);
+categoryRoutes.post("/createCategory", userAuth, adminAuth, createCategory);
 
 //Select Categorys
-categoryRoutes.get("/selectAllCategory", userAuth, selectAllCategory);
+categoryRoutes.get("/selectAllCategory", selectAllCategory);
 
 //Select Categorys
-categoryRoutes.get("/selectCategory/:id", userAuth, selectCategory);
+categoryRoutes.get("/selectCategory/:id", userAuth, adminAuth, selectCategory);
 
 //Update Category
-categoryRoutes.patch("/updateCategory/:id", userAuth, updateCategory);
+categoryRoutes.patch(
+  "/updateCategory/:id",
+  userAuth,
+  adminAuth,
+  updateCategory,
+);
 
 //Delete Category
-categoryRoutes.delete("/deleteCategory/:id", userAuth, deleteCategory);
+categoryRoutes.delete(
+  "/deleteCategory/:id",
+  userAuth,
+  adminAuth,
+  deleteCategory,
+);
 
 module.exports = categoryRoutes;

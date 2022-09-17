@@ -22,40 +22,32 @@ const EditPost = () => {
     CategoryRequest.selectAllCategoryRequest();
   }, [id]);
 
-  const store = useSelector((state) => state?.category);
-  const { categoryList } = store;
-
-  const { post } = useSelector((state) => state?.post);
-
-  const postSchema = yup.object().shape({
-    title: yup.string().required("Post Title is required"),
-    categoryId: yup.string().required("Post Category Name is required"),
-    description: yup.string().required("Post Description is required"),
-  });
+  const { CategoryList } = useSelector((state) => state?.Category);
+  const { Post } = useSelector((state) => state?.Post);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      title: post?.title,
-      categoryId: post?.categoryId,
-      description: post?.description,
-      postThumbnail: post?.postThumbnail,
-      tagsId: post?.tagsId?.toString(),
+      title: Post?.title,
+      categoryId: Post?.categoryId,
+      description: Post?.description,
+      tagsId: Post?.tagsId?.toString(),
+      postThumbnail: "",
     },
-    validationSchema: postSchema,
     onSubmit: (values) => {
       let formData = new FormData();
       formData.append("title", values?.title);
       formData.append("categoryId", values?.categoryId);
       formData.append("description", values?.description);
-      formData.append("postThumbnail", values?.postThumbnail);
+
+      if (values.postThumbnail !== undefined) {
+        formData.append("postThumbnail", values?.postThumbnail);
+      }
       formData.append("tagsId", values?.tagsId);
 
-      PostRequest.updatePostRequest({ id, postBody: formData }).then(
-        (result) => {
-          navigate("/posts");
-        },
-      );
+      PostRequest.updatePostRequest(id, formData).then((result) => {
+        navigate("/posts");
+      });
     },
   });
 
@@ -89,6 +81,7 @@ const EditPost = () => {
                   value={formik.values.title}
                   onChange={formik.handleChange("title")}
                   onBlur={formik.handleBlur("title")}
+                  autoFocus
                 />
               </div>
               <div className="text-red-500">
@@ -104,19 +97,19 @@ const EditPost = () => {
 
             <select
               className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              name="categoryId"
-              value={formik.values.categoryId}
-              onChange={formik.handleChange("categoryId")}
-              onBlur={formik.handleBlur("categoryId")}
+              name="CategoryId"
+              value={formik.values.CategoryId}
+              onChange={formik.handleChange("CategoryId")}
+              onBlur={formik.handleBlur("CategoryId")}
               autoFocus
             >
-              {categoryList &&
-                categoryList.map((category) => {
-                  return <option value={category._id}>{category.name}</option>;
+              {CategoryList &&
+                CategoryList.map((Category) => {
+                  return <option value={Category._id}>{Category.name}</option>;
                 })}
             </select>
             <div className="text-red-500">
-              {formik.touched.category && formik.errors.category}
+              {formik.touched.Category && formik.errors.Category}
             </div>
 
             <TagDropDown
@@ -173,7 +166,7 @@ const EditPost = () => {
                 type="submit"
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                Create
+                Update
               </button>
             </div>
           </form>

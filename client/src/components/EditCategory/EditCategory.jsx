@@ -17,30 +17,30 @@ const EditCategory = () => {
     CategoryRequest.selectCategoryRequest(id);
   }, [id]);
 
-  const { category } = useSelector((state) => state.category);
+  const { Category } = useSelector((state) => state.Category);
 
-  const categorySchema = yup.object().shape({
+  const CategorySchema = yup.object().shape({
     name: yup.string().required("Category Name is required"),
   });
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: category?.name,
+      name: Category?.name,
     },
     onSubmit: (values) => {
       CategoryRequest.updateCategoryRequest({ id, postBody: values }).then(
         (result) => {
-          result && navigate("/category-list");
+          result && navigate("/Category-list");
         },
       );
     },
-    validationSchema: categorySchema,
+    validationSchema: CategorySchema,
   });
 
   const removeCategory = (id) => {
     CategoryRequest.deleteCategoryRequest(id).then((result) => {
-      result && navigate("/category-list");
+      result && navigate("/Category-list");
     });
   };
 

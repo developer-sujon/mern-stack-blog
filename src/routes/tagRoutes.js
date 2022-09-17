@@ -2,7 +2,7 @@
 const tagRoutes = require("express").Router();
 
 //Internal Import
-const { userAuth } = require("../middleware/checkAuthLogin");
+const { userAuth, adminAuth } = require("../middleware/checkAuthLogin");
 const {
   createTag,
   selectAllTag,
@@ -12,18 +12,18 @@ const {
 } = require("../controller/tagControllers");
 
 //Create Category
-tagRoutes.post("/createTag", userAuth, createTag);
+tagRoutes.post("/createTag", userAuth, adminAuth, createTag);
 
 //Select Categorys
-tagRoutes.get("/selectAllTag", userAuth, selectAllTag);
+tagRoutes.get("/selectAllTag", userAuth,  selectAllTag);
 
 //Select Categorys
-tagRoutes.get("/selectTag/:id", userAuth, selectTag);
+tagRoutes.get("/selectTag/:id", userAuth, adminAuth, selectTag);
 
 //Update Category
-tagRoutes.patch("/updateTag/:id", userAuth, updateTag);
+tagRoutes.patch("/updateTag/:id", userAuth, adminAuth, updateTag);
 
 //Delete Category
-tagRoutes.delete("/deleteTag/:id", userAuth, deleteTag);
+tagRoutes.delete("/deleteTag/:id", userAuth, adminAuth, deleteTag);
 
 module.exports = tagRoutes;

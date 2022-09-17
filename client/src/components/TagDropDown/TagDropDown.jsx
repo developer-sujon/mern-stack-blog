@@ -10,12 +10,11 @@ const TagDropDown = (props) => {
     TagRequest.selectAllTagRequest();
   }, []);
 
-  const store = useSelector((state) => state?.tag);
-  const { tagList } = store;
+  const { TagList } = useSelector((state) => state?.Tag);
 
   const allTags =
-    tagList &&
-    tagList?.map((tag) => {
+    TagList &&
+    TagList?.map((tag) => {
       return {
         label: tag?.name,
         value: tag?._id,

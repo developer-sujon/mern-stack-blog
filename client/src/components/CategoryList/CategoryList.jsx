@@ -12,13 +12,13 @@ const CategoryList = () => {
     CategoryRequest.selectAllCategoryRequest();
   }, []);
 
-  const { categoryList } = useSelector((state) => state?.category);
+  const { CategoryList } = useSelector((state) => state?.Category);
 
   return (
     <div className="w-full max-w-screen-xl mx-auto mt-5">
-      {categoryList?.length <= 0 ? (
+      {CategoryList?.length <= 0 ? (
         <h2 className="text-center text-3xl text-green-800">
-          No category Found
+          No Category Found
         </h2>
       ) : (
         <div className="flex flex-col">
@@ -55,34 +55,34 @@ const CategoryList = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {categoryList?.map((category) => (
+                    {CategoryList?.map((Category) => (
                       <tr className="bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="flex-shrink-0 h-10 w-10">
                               <img
                                 className="h-10 w-10 rounded-full"
-                                src={category?.user[0]?.avatar}
-                                alt="category profile"
+                                src={Category?.user[0]?.avatar}
+                                alt="Category profile"
                               />
                             </div>
                             <div className="ml-4">
                               <div className="text-sm font-medium text-gray-900">
-                                {category?.user[0]?.userName}
+                                {Category?.user[0]?.userName}
                               </div>
                               <div className="text-sm text-gray-500">
-                                {category?.user[0]?.email}
+                                {Category?.user[0]?.email}
                               </div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 capitalize">
-                          {category.name}
+                          {Category.name}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(category?.createdAt).toDateString()}
+                          {new Date(Category?.createdAt).toDateString()}
                         </td>
-                        <Link to={`/edit-category/${category._id}`}>
+                        <Link to={`/edit-Category/${Category._id}`}>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             <BsPencil className="h-5 text-indigo-500" />
                           </td>

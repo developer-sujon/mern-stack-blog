@@ -1,6 +1,6 @@
 //External import
 const cloudinary = require("cloudinary");
-const { createError } = require("../helper/errorHandler");
+const { CreateError } = require("../helper/errorHandler");
 
 //confiqure cloudinary
 cloudinary.config({
@@ -15,14 +15,21 @@ const cloudinaryUpload = async (fileToUpload) => {
       resource_type: "auto",
     });
 
-    console.log(data);
-
     return {
       url: data?.secure_url,
+      public_id: data?.public_id,
     };
   } catch (e) {
-    createError(e.message, e.status);
+    CreateError(e.message, e.status);
   }
 };
 
-module.exports = cloudinaryUpload;
+const cloudinaryDelete = async (public_id) => {
+  try {
+    return await cloudinary.uploader.destroy(public_id);
+  } catch (e) {
+    CreateError(e.message, e.status);
+  }
+};
+
+module.exports = { cloudinaryUpload, cloudinaryDelete };

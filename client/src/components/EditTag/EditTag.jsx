@@ -17,10 +17,9 @@ const EditTag = () => {
     TagRequest.selectTagRequest(id);
   }, [id]);
 
-  const state = useSelector((state) => state.tag);
-  const { tag } = state;
+  const { Tag } = useSelector((state) => state.Tag);
 
-  const tagSchema = yup
+  const TagSchema = yup
     .object({
       name: yup.string().required("Tag Name is required"),
     })
@@ -29,19 +28,19 @@ const EditTag = () => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: tag?.name,
+      name: Tag?.name,
     },
-    validationSchema: tagSchema,
+    validationSchema: TagSchema,
     onSubmit: (values) => {
       TagRequest.updateTagRequest({ id, postBody: values }).then((result) => {
-        result && navigate("/tag-list");
+        result && navigate("/Tag-list");
       });
     },
   });
 
   const removeTag = (id) => {
     TagRequest.deleteTagRequest(id).then((result) => {
-      result && navigate("/tag-list");
+      result && navigate("/Tag-list");
     });
   };
 

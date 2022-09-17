@@ -2,21 +2,21 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 //Internal Import
-import loaderReducer from "../slices/loaderSlice";
-import authReducer from "../slices/authSlice";
-import profileReducer from "../slices/profileSlice";
-import categoryReducer from "../slices/categorySlice";
-import tagReducer from "../slices/tagSlice";
-import postReducer from "../slices/postSlice";
+import loaderReducer from "../slices/LoaderSlice";
+import AuthSlice from "../slices/AuthSlice";
+import UserSlice from "../slices/UserSlice";
+import CategorySlice from "../slices/CategorySlice";
+import TagSlice from "../slices/TagSlice";
+import PostSlice from "../slices/PostSlice";
 
 const store = configureStore({
   reducer: {
-    auth: authReducer,
-    loader: loaderReducer,
-    profile: profileReducer,
-    category: categoryReducer,
-    tag: tagReducer,
-    post: postReducer,
+    Auth: AuthSlice,
+    Loader: loaderReducer,
+    User: UserSlice,
+    Category: CategorySlice,
+    Tag: TagSlice,
+    Post: PostSlice,
   },
 });
 

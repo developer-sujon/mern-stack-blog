@@ -1,21 +1,20 @@
-//External import
+//external import
 import { createSlice } from "@reduxjs/toolkit";
 
-const loaderSlice = createSlice({
-  name: "loader",
+const LoaderSlice = createSlice({
+  name: "Loader",
   initialState: {
-    isLoading: false,
-    isError: false,
+    IsLoading: false,
   },
   reducers: {
-    setLoading(state, action) {
-      state.isLoading = true;
+    SetLoading(state, action) {
+      state.IsLoading = true;
     },
-    removeLoading(state, action) {
-      state.isLoading = false;
+    RemoveLoading(state, action) {
+      state.IsLoading = false;
     },
   },
 });
 
-export const { setLoading, removeLoading } = loaderSlice.actions;
-export default loaderSlice.reducer;
+export const { SetLoading, RemoveLoading } = LoaderSlice.actions;
+export default LoaderSlice.reducer;

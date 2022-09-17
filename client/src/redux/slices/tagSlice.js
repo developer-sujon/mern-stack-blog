@@ -1,21 +1,21 @@
 //External import
 import { createSlice } from "@reduxjs/toolkit";
 
-const tagSlice = createSlice({
-  name: "tag",
+const TagSlice = createSlice({
+  name: "Tag",
   initialState: {
-    tagList: [],
-    tag: {},
+    TagList: [],
+    Tag: {},
   },
   reducers: {
-    setTagList(state, action) {
-      state.tagList = action.payload;
+    SetTagList(state, action) {
+      state.TagList = action.payload;
     },
-    setTag(state, action) {
-      state.tag = action.payload;
+    SetTag(state, action) {
+      state.Tag = action.payload;
     },
   },
 });
 
-export const { setTagList, setTag } = tagSlice.actions;
-export default tagSlice.reducer;
+export const { SetTagList, SetTag } = TagSlice.actions;
+export default TagSlice.reducer;

@@ -12,13 +12,12 @@ import {
 import { BsBookmarkCheck } from "react-icons/bs";
 
 //Internal Import
-import { logOut } from "../../../redux/slices/authSlice";
+import { SetLogout } from "../../../redux/slices/AuthSlice";
 
 const navigation = [
   { name: "Home", href: "/", current: true },
   { name: "Create", href: "/create-post", current: false },
   { name: "Posts", href: "/posts", current: false },
-  { name: "Authors", href: "/users", current: false },
 ];
 
 function classNames(...classes) {
@@ -93,7 +92,7 @@ const PrivateNavigation = ({ user }) => {
                   <button
                     type="button"
                     className="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
-                    onClick={() => dispatch(logOut())}
+                    onClick={() => dispatch(SetLogout())}
                   >
                     <AiOutlineLogout
                       className="-ml-1 mr-2 h-5 w-5"
@@ -133,15 +132,15 @@ const PrivateNavigation = ({ user }) => {
                             {userNavigation.map((item) => (
                               <Menu.Item key={item.name}>
                                 {({ active }) => (
-                                  <a
-                                    href={item.href}
+                                  <Link
+                                    to={item.href}
                                     className={classNames(
                                       active ? "bg-gray-100" : "",
                                       "block px-4 py-2 text-sm text-gray-700",
                                     )}
                                   >
                                     {item.name}
-                                  </a>
+                                  </Link>
                                 )}
                               </Menu.Item>
                             ))}

@@ -1,16 +1,39 @@
 //External import
 const multer = require("multer");
-const sharp = require("sharp");
 const path = require("path");
+const fs = require("fs");
 
 //Internal import
-const { createError } = require("../../helper/errorHandler");
+const { CreateError } = require("../../helper/errorHandler");
 
 //Storage
-const multerStorage = multer.memoryStorage();
+// File upload folder
+const UPLOADS_FOLDER = "./public/images/";
+
+// var upload = multer({ dest: UPLOADS_FOLDER });
+
+// define the storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, UPLOADS_FOLDER);
+  },
+  filename: (req, file, cb) => {
+    const fileExt = path.extname(file.originalname);
+    const fileName =
+      file.originalname
+        .replace(fileExt, "")
+        .toLowerCase()
+        .split(" ")
+        .join("-") +
+      "-" +
+      Date.now();
+
+    cb(null, fileName + fileExt);
+  },
+});
 
 //Image File Filter
-const avataFileFilter = (req, file, cb) => {
+const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
     cb(null, true);
   } else {
@@ -20,75 +43,40 @@ const avataFileFilter = (req, file, cb) => {
 
 //Image Upload
 const imageUpload = multer({
-  storage: multerStorage,
+  storage: storage,
   limits: {
     fileSize: 1000000,
   },
-  fileFilter: avataFileFilter,
+  fileFilter: multerFilter,
 });
 
-const resizeAvata = async (req, res, next) => {
-  if (!req.file) return next();
+const resizeImg = async (req, res, next) => {
+  // if (!req.file) return next();
 
-  const fileExt = path.extname(req.file.originalname);
-  req.file.filename =
-    req.file.originalname
-      .replace(fileExt, "")
-      .toLowerCase()
-      .split(" ")
-      .join("-") +
-    "-" +
-    Date.now() +
-    fileExt;
+  // const fileExt = path.extname(req.file.originalname);
+  // const formetFileName =
+  //   req.file.originalname
+  //     .replace(fileExt, "")
+  //     .toLowerCase()
+  //     .split(" ")
+  //     .join("-") +
+  //   "-" +
+  //   Date.now() +
+  //   fileExt;
 
-  try {
-    await sharp(req.file.buffer)
-      .resize(250, 250)
-      .toFormat("jpeg")
-      .jpeg({ quality: 90 })
-      .toFile(path.join(`public/uploads/images/avata/${req.file.filename}`));
+  // console.log(formetFileName);
 
-    req.file.avataImg = `/uploads/images/avata/${req.file.filename}`;
+  // try {
+  //   req.file.filename = req.file.originalname;
+  //   next();
+  // } catch (e) {
+  //   CreateError(e.message, e.status);
+  // }
 
-    next();
-  } catch (e) {
-    createError(e.message, e.status);
-  }
-};
-
-const resizePost = async (req, res, next) => {
-  if (!req.file) return next();
-
-  const fileExt = path.extname(req.file.originalname);
-  req.file.filename =
-    req.file.originalname
-      .replace(fileExt, "")
-      .toLowerCase()
-      .split(" ")
-      .join("-") +
-    "-" +
-    Date.now() +
-    fileExt;
-
-  try {
-    await sharp(req.file.buffer)
-      .resize(500, 500)
-      .toFormat("jpeg")
-      .jpeg({ quality: 90 })
-      .toFile(
-        path.join(`client/public/uploads/images/posts/${req.file.filename}`),
-      );
-
-    req.file.postThumbnail = `/uploads/images/posts/${req.file.filename}`;
-
-    next();
-  } catch (e) {
-    createError(e.message, e.status);
-  }
+  return next();
 };
 
 module.exports = {
+  resizeImg,
   imageUpload,
-  resizeAvata,
-  resizePost,
 };

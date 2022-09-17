@@ -26,7 +26,7 @@ const LoginUser = () => {
     },
     validationSchema: loginSchema,
     onSubmit: (values) => {
-      AuthRequest.loginUserRequest(values);
+      AuthRequest.LoginUser(values);
     },
   });
 

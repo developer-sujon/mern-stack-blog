@@ -90,9 +90,6 @@ const loginUser = async (req, res) => {
 
     res.json({
       accessToken: token,
-      user: {
-        roles: exitUser[0].roles,
-      },
     });
   } catch (e) {
     throw createError(e.message, e.status);

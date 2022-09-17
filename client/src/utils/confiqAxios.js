@@ -3,7 +3,7 @@ import axios from "axios";
 
 //Internal import
 import store from "../redux/store/store";
-import { logoutUserAction } from "../redux/slices/authSlice";
+import { logoutUserAction } from "../redux/slices/AuthSlice";
 
 // axios.interceptors.response.use(
 //   (response) => {

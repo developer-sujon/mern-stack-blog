@@ -5,29 +5,27 @@ import { useDispatch, useSelector } from "react-redux";
 import AdminNavigation from "./admin/AdminNavigation";
 import PrivateNavigation from "./private/PrivateNavigation";
 import PublicNavigation from "./public/PublicNavigation";
-import ProfileRequest from "../../APIRequest/ProfileRequest";
+import UserRequest from "../../APIRequest/UserRequest";
 
 const AppNavigation = ({ title }) => {
-  const auth = useSelector((state) => state.auth);
-  const roles = auth?.user?.roles[0];
-  const accessToken = auth?.accessToken;
+  const { accessToken } = useSelector((state) => state.Auth);
 
   useEffect(() => {
-    accessToken && ProfileRequest.selectProfileRequest();
+    accessToken && UserRequest.selectUserRequest();
   }, [accessToken]);
 
-  const store = useSelector((state) => state.profile);
-  const { user } = store;
+  const { UserDetails } = useSelector((state) => state.User);
+  const roles = UserDetails?.roles?.[0];
 
   return (
     <>
       <title>{title}</title>
       {roles === "USER" && accessToken ? (
-        <PrivateNavigation user={user} />
+        <PrivateNavigation user={UserDetails} />
       ) : roles === "ADMIN" && accessToken ? (
-        <AdminNavigation user={user} />
+        <AdminNavigation user={UserDetails} />
       ) : (
-        <PublicNavigation user={user} />
+        <PublicNavigation user={UserDetails} />
       )}
     </>
   );

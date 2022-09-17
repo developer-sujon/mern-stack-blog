@@ -2,90 +2,49 @@
 import store from "../redux/store/store";
 import ToastMessage from "../helper/ToastMessage";
 import RestClient from "./RestClient";
-import { setLoading, removeLoading } from "../redux/slices/loaderSlice";
-import { setTag, setTagList } from "../redux/slices/tagSlice";
+import { SetTag, SetTagList } from "../redux/slices/TagSlice";
 
 class TagRequest {
   static async createTagRequest(postBody) {
-    store.dispatch(setLoading());
-    try {
-      const { data } = await RestClient.postRequest("/tag/createTag", postBody);
+    const { data } = await RestClient.postRequest("/tag/createTag", postBody);
+    if (data) {
       ToastMessage.successMessage(data.message);
-      store.dispatch(removeLoading());
       return true;
-    } catch (err) {
-      store.dispatch(removeLoading());
-      const error = err?.response?.data?.message || "Something Went Wrong";
-      ToastMessage.errorMessage(error);
-      return false;
     }
   }
 
   static async selectAllTagRequest(postBody) {
-    store.dispatch(setLoading());
-    try {
-      const { data } = await RestClient.getRequest("/tag/selectAllTag");
-
-      store.dispatch(setTagList(data));
-      store.dispatch(removeLoading());
+    const { data } = await RestClient.getRequest("/tag/selectAllTag");
+    if (data) {
+      store.dispatch(SetTagList(data));
       return true;
-    } catch (err) {
-      store.dispatch(removeLoading());
-      const error = err?.response?.data?.message || "Something Went Wrong";
-      ToastMessage.errorMessage(error);
-      return false;
     }
   }
 
   static async selectTagRequest(id) {
-    store.dispatch(setLoading());
-    try {
-      const { data } = await RestClient.getRequest("tag/selectTag/" + id);
-
-      store.dispatch(setTag(data?.[0]));
-      store.dispatch(removeLoading());
+    const { data } = await RestClient.getRequest("tag/selectTag/" + id);
+    if (data) {
+      store.dispatch(SetTag(data?.[0]));
       return true;
-    } catch (err) {
-      store.dispatch(removeLoading());
-      const error = err?.response?.data?.message || "Something Went Wrong";
-      ToastMessage.errorMessage(error);
-      return false;
     }
   }
 
   static async updateTagRequest({ id, postBody }) {
-    store.dispatch(setLoading());
-
-    try {
-      const { data } = await RestClient.updateRequest(
-        "Tag/updateTag/" + id,
-        postBody,
-      );
+    const { data } = await RestClient.updateRequest(
+      "Tag/updateTag/" + id,
+      postBody,
+    );
+    if (data) {
       ToastMessage.successMessage(data.message);
-      store.dispatch(removeLoading());
-
       return true;
-    } catch (err) {
-      store.dispatch(removeLoading());
-      const error = err?.response?.data?.message || "Something Went Wrong";
-      ToastMessage.errorMessage(error);
-      return false;
     }
   }
 
   static async deleteTagRequest(id) {
-    store.dispatch(setLoading());
-
-    try {
-      const { data } = await RestClient.deleteRequest("tag/deleteTag/" + id);
+    const { data } = await RestClient.deleteRequest("tag/deleteTag/" + id);
+    if (data) {
       ToastMessage.successMessage(data.message);
-      store.dispatch(removeLoading());
       return true;
-    } catch (err) {
-      store.dispatch(removeLoading());
-      const error = err?.response?.data?.message || "Something Went Wrong";
-      ToastMessage.errorMessage(error);
-      return false;
     }
   }
 }

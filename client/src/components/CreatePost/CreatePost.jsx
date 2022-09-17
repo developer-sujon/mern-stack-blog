@@ -17,8 +17,7 @@ const CreatePost = () => {
     CategoryRequest.selectAllCategoryRequest();
   }, []);
 
-  const store = useSelector((state) => state?.category);
-  const { categoryList } = store;
+  const { CategoryList } = useSelector((state) => state?.Category);
 
   const postSchema = yup.object().shape({
     title: yup.string().required("Post Title is required"),
@@ -101,8 +100,8 @@ const CreatePost = () => {
               onBlur={formik.handleBlur("categoryId")}
               autoFocus
             >
-              {categoryList &&
-                categoryList.map((category) => {
+              {CategoryList &&
+                CategoryList.map((category) => {
                   return <option value={category._id}>{category.name}</option>;
                 })}
             </select>

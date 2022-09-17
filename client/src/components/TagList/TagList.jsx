@@ -9,12 +9,11 @@ const TagList = () => {
     TagRequest.selectAllTagRequest();
   }, []);
 
-  const store = useSelector((state) => state?.tag);
-  const { tagList } = store;
+  const { TagList } = useSelector((state) => state?.Tag);
 
   return (
     <div className="w-full max-w-screen-xl mx-auto mt-5">
-      {tagList?.length <= 0 ? (
+      {TagList?.length <= 0 ? (
         <h2 className="text-center text-3xl text-green-800">
           No category Found
         </h2>
@@ -53,34 +52,34 @@ const TagList = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {tagList?.map((tag) => (
-                      <tr className="bg-gray-50" key={tag._id}>
+                    {TagList?.map((Tag) => (
+                      <tr className="bg-gray-50" key={Tag._id}>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="flex-shrink-0 h-10 w-10">
                               <img
                                 className="h-10 w-10 rounded-full"
-                                src={tag?.user[0]?.avatar}
-                                alt="tag profile"
+                                src={Tag?.user[0]?.avatar}
+                                alt="Tag profile"
                               />
                             </div>
                             <div className="ml-4">
                               <div className="text-sm font-medium text-gray-900">
-                                {tag?.user[0]?.userName}
+                                {Tag?.user[0]?.userName}
                               </div>
                               <div className="text-sm text-gray-500">
-                                {tag?.user[0]?.email}
+                                {Tag?.user[0]?.email}
                               </div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 capitalize">
-                          {tag.name}
+                          {Tag.name}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(tag?.createdAt).toDateString()}
+                          {new Date(Tag?.createdAt).toDateString()}
                         </td>
-                        <Link to={`/edit-tag/${tag._id}`}>
+                        <Link to={`/edit-tag/${Tag._id}`}>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             <BsPencil className="h-5 text-indigo-500" />
                           </td>

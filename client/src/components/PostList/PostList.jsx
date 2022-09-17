@@ -17,8 +17,23 @@ const PostList = () => {
     CategoryRequest.selectAllCategoryRequest();
   }, []);
 
-  const { categoryList } = useSelector((state) => state?.category);
-  const { postList } = useSelector((state) => state?.post);
+  const { CategoryList } = useSelector((state) => state?.Category);
+  const { PostList } = useSelector((state) => state?.Post);
+
+  const likePost = (id) => {
+    PostRequest.likePostRequest(id).then((result) => {
+      if (result) {
+        PostRequest.selectAllPostRequest();
+      }
+    });
+  };
+  const disLikePost = (id) => {
+    PostRequest.disLikePostRequest(id).then((result) => {
+      if (result) {
+        PostRequest.selectAllPostRequest();
+      }
+    });
+  };
 
   return (
     <section>
@@ -49,20 +64,20 @@ const PostList = () => {
                 Categories
               </h4>
               <ul>
-                {categoryList?.length <= 0 ? (
+                {CategoryList?.length <= 0 ? (
                   <h1 className="text-yellow-400 text-lg text-center">
                     No Category Found
                   </h1>
                 ) : (
-                  categoryList?.map((category) => (
+                  CategoryList?.map((Category) => (
                     <li>
                       <p
                         // onClick={() =>
-                        //   dispatch(fetchPostsAction(category?.title))
+                        //   dispatch(fetchPostsAction(Category?.title))
                         // }
                         className="block cursor-pointer py-2 px-3 mb-4 rounded text-yellow-500 font-bold bg-gray-500"
                       >
-                        {category?.name}
+                        {Category?.name}
                       </p>
                     </li>
                   ))
@@ -71,51 +86,47 @@ const PostList = () => {
             </div>
             <div className="flex flex-wrap w-[75%] p-[1rem]">
               <div className="w-full lg:w-3/4 px-3">
-                {postList?.length <= 0 ? (
+                {PostList?.length <= 0 ? (
                   <h1 className="text-yellow-400 text-lg text-center">
                     No Post Found
                   </h1>
                 ) : (
-                  postList?.map((post) => (
+                  PostList?.map((Post) => (
                     <div
-                      key={post.id}
+                      key={Post._id}
                       className="flex flex-wrap bg-gray-900 -mx-3  lg:mb-6"
                     >
                       <div className="mb-10  w-full lg:w-4/12 ">
-                        <Link to={post?.postThumbnail}>
+                        <a href={Post?.postThumbnail} target="_blank">
                           <img
                             className="w-full h-full object-cover rounded"
-                            src={post?.postThumbnail}
-                            alt={post?.slug}
+                            src={Post?.postThumbnail}
+                            alt={Post?.slug}
                           />
-                        </Link>
+                        </a>
 
                         <div className="flex flex-row bg-gray-300  justify-center w-full  items-center ">
                           <div className="flex flex-row justify-center items-center ml-4 mr-4 pb-2 pt-1">
                             <div className="">
                               <HiOutlineThumbUp
-                                //   onClick={() =>
-                                //     dispatch(toggleAddLikesToPost(post?._id))
-                                //   }
+                                onClick={() => likePost(Post?._id)}
                                 className="h-7 w-7 text-indigo-600 cursor-pointer"
                               />
                             </div>
                             <div className="pl-2 text-gray-600">
-                              {post?.likes?.length}
+                              {Post?.likes?.length}
                             </div>
                           </div>
 
                           <div className="flex flex-row  justify-center items-center ml-4 mr-4 pb-2 pt-1">
                             <div>
                               <HiOutlineThumbDown
-                                //   onClick={() =>
-                                //     dispatch(toggleAddDisLikesToPost(post?._id))
-                                //   }
+                                onClick={() => disLikePost(Post?._id)}
                                 className="h-7 w-7 cursor-pointer text-gray-600"
                               />
                             </div>
                             <div className="pl-2 text-gray-600">
-                              {post?.disLikes?.length}
+                              {Post?.disLikes?.length}
                             </div>
                           </div>
 
@@ -124,20 +135,22 @@ const PostList = () => {
                               <AiOutlineEyeInvisible className="h-7 w-7  text-gray-400" />
                             </div>
                             <div className="pl-2 text-gray-600">
-                              {post?.numView}
+                              {Post?.numView}
                             </div>
                           </div>
                         </div>
                       </div>
                       <div className="w-full lg:w-7/12 px-3">
-                        <Link to="/" className="hover:underline">
+                        <Link to={Post?.slug} className="hover:underline">
                           <h3 className="mb-1 text-2xl text-green-400 font-bold font-heading">
-                            {post?.title}
+                            {Post?.title}
                           </h3>
                         </Link>
-                        <p className="text-gray-300">{post?.description}</p>
+                        <p className="text-gray-300">
+                          {Post?.description.slice(0, 150)} ....
+                        </p>
                         <Link
-                          to={`/posts/${post?.slug}`}
+                          to={`/posts/${Post?.slug}`}
                           className="text-indigo-500 hover:underline"
                         >
                           Read More..
@@ -147,7 +160,7 @@ const PostList = () => {
                             <Link to="/">
                               <img
                                 className="h-10 w-10 rounded-full"
-                                src={post?.user?.[0]?.avatar}
+                                src={Post?.user?.[0]?.avatar}
                                 alt=""
                               />
                             </Link>
@@ -155,15 +168,15 @@ const PostList = () => {
                           <div className="ml-3">
                             <p className="text-sm font-medium text-gray-900">
                               <Link
-                                to="/"
+                                to={`/profile/${Post?.user?.[0]?.userName}`}
                                 className="text-yellow-400 hover:underline "
                               >
-                                {post?.user?.[0]?.userName}
+                                {Post?.user?.[0]?.userName}
                               </Link>
                             </p>
                             <div className="flex space-x-1 text-sm text-green-500">
                               <time>
-                                <DateFormatter date={post?.createdAt} />
+                                <DateFormatter date={Post?.createdAt} />
                               </time>
                               <span aria-hidden="true">&middot;</span>
                             </div>

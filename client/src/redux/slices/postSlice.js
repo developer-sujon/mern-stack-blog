@@ -1,21 +1,18 @@
 //External import
 import { createSlice } from "@reduxjs/toolkit";
 
-const postSlice = createSlice({
-  name: "post",
-  initialState: {
-    postList: [],
-    post: {},
-  },
+const PostSlice = createSlice({
+  name: "Post",
+  initialState: {},
   reducers: {
-    setPostList(state, action) {
-      state.postList = action.payload;
+    SetPostList(state, action) {
+      state.PostList = action.payload;
     },
-    setPost(state, action) {
-      state.post = action.payload;
+    SetPost(state, action) {
+      state.Post = action.payload;
     },
   },
 });
 
-export const { setPostList, setPost } = postSlice.actions;
-export default postSlice.reducer;
+export const { SetPostList, SetPost } = PostSlice.actions;
+export default PostSlice.reducer;

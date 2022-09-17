@@ -7,6 +7,7 @@ const Filter = require("bad-words");
 const { createError } = require("../helper/errorHandler");
 const PostModel = require("../model/PostModel");
 const UserModel = require("../model/UserModel");
+const { cloudinaryUpload, cloudinaryDelete } = require("../utils/cloudinary");
 
 /**
  * @desc Create Post
@@ -31,17 +32,25 @@ const createPost = async (req, res) => {
     tagsId = [];
   }
 
-  const newPost = new PostModel({
-    title,
-    description: req?.body?.description,
-    categoryId,
-    tagsId,
-    userId: req.id,
-    postThumbnail: req?.file?.postThumbnail,
-    slug: req.body.title.toLowerCase().split(" ").join("-"),
-  });
-
   try {
+    const localPath = `public/images/${req.file.filename}`;
+    const imgUploaded = await cloudinaryUpload(localPath);
+
+    req.body.postThumbnail = imgUploaded?.url;
+    req.body.public_id = imgUploaded?.public_id;
+    fs.unlinkSync(localPath);
+
+    const newPost = new PostModel({
+      title,
+      description: req?.body?.description,
+      categoryId,
+      tagsId,
+      userId: req.id,
+      postThumbnail: req?.body?.postThumbnail,
+      slug: req.body.title.toLowerCase().split(" ").join("-"),
+      public_id: req.body.public_id,
+    });
+
     if (isProfane) {
       await UserModel.findByIdAndUpdate(req.id, {
         accountStatus: "REJECTED",
@@ -126,6 +135,7 @@ const selectAllPost = async (req, res) => {
           user: { userName: 1, avatar: 1 },
         },
       },
+      { $sort: { _id: -1 } },
     ]);
 
     res.json(posts);
@@ -352,17 +362,21 @@ const updatePost = async (req, res) => {
       );
     }
 
-    if (
-      req?.file?.postThumbnail &&
-      fs.existsSync("client/public" + post[0].postThumbnail)
-    ) {
-      fs.unlinkSync("client/public" + post[0].postThumbnail);
+    if (req?.file?.filename) {
+      await cloudinaryDelete(post?.[0]?.public_id);
+
+      const localPath = `public/images/${req.file.filename}`;
+      const imgUploaded = await cloudinaryUpload(localPath);
+      req.body.postThumbnail = imgUploaded?.url;
+      req.body.public_id = imgUploaded?.public_id;
+      fs.unlinkSync(localPath);
     }
 
     await PostModel.findByIdAndUpdate(id, {
       ...req.body,
       userId: req.id,
-      postThumbnail: req?.file?.postThumbnail,
+      postThumbnail: req?.body?.postThumbnail,
+      public_id: req?.body?.public_id,
       slug: req.body.title.toLowerCase().split(" ").join("-"),
     });
 
@@ -434,7 +448,7 @@ const likePost = async (req, res) => {
         { new: true },
       );
 
-      res.json(post);
+      res.json({ message: "Like Successfull" });
     }
 
     if (alreadylike) {
@@ -446,7 +460,7 @@ const likePost = async (req, res) => {
         },
         { new: true },
       );
-      res.json(post);
+      res.json({ message: "Withdraw Like This Post" });
     } else {
       post = await PostModel.findByIdAndUpdate(
         id,
@@ -456,7 +470,7 @@ const likePost = async (req, res) => {
         },
         { new: true },
       );
-      res.json(post);
+      res.json({ message: "Like Successfull" });
     }
   } catch (e) {
     throw createError(e.message, e.status);
@@ -497,7 +511,7 @@ const disLikePost = async (req, res) => {
         { new: true },
       );
 
-      res.json(post);
+      res.json({ message: "Dislike Successfull" });
     }
 
     if (alreadyDislike) {
@@ -509,7 +523,7 @@ const disLikePost = async (req, res) => {
         },
         { new: true },
       );
-      res.json(post);
+      res.json({ message: "DisLike Withdraw This Post" });
     } else {
       post = await PostModel.findByIdAndUpdate(
         id,
@@ -519,7 +533,7 @@ const disLikePost = async (req, res) => {
         },
         { new: true },
       );
-      res.json(post);
+      res.json({ message: "Dislike Successfull" });
     }
   } catch (e) {
     throw createError(e.message, e.status);

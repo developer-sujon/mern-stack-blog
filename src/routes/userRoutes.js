@@ -17,10 +17,7 @@ const {
   uploadProfilePhoto,
 } = require("../controller/userControllers");
 const { userAuth, adminAuth } = require("../middleware/checkAuthLogin");
-const {
-  imageUpload,
-  resizeAvata,
-} = require("../middleware/multer/uploadPhoto");
+const { imageUpload } = require("../middleware/multer/uploadPhoto");
 
 //Select User
 userRoutes.get("/selectProfile", userAuth, selectProfile);
@@ -32,7 +29,6 @@ userRoutes.get("/selectUserProfile/:userName", selectUserProfile);
 userRoutes.patch(
   "/updateUser",
   imageUpload.single("avata"),
-  resizeAvata,
   userAuth,
   updateUser,
 );
@@ -45,7 +41,6 @@ userRoutes.patch(
   "/uploadProfilePhoto",
   userAuth,
   imageUpload.single("avata"),
-  resizeAvata,
   uploadProfilePhoto,
 );
 

@@ -2,8 +2,15 @@
 const adminRoutes = require("express").Router();
 
 //Internal Import
-const { blockUser, unBlockUser } = require("../controller/adminControllers");
+const {
+  blockUser,
+  unBlockUser,
+  selectAllUser,
+} = require("../controller/adminControllers");
 const { userAuth, adminAuth } = require("../middleware/checkAuthLogin");
+
+//Select All User
+adminRoutes.get("/selectAllUser", userAuth, adminAuth, selectAllUser);
 
 //Block User
 adminRoutes.put("/blockUser/:id", userAuth, adminAuth, blockUser);

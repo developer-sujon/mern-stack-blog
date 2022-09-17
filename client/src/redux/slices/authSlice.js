@@ -1,29 +1,26 @@
-////External import
+//External import
 import { createSlice } from "@reduxjs/toolkit";
 
-//Enternel lib imports
+//Internal import
 import SessionHelper from "../../helper/SessionHelper";
 
-const authSlice = createSlice({
-  name: "auth",
+const AuthSlice = createSlice({
+  name: "Auth",
   initialState: {
-    user: SessionHelper.getUserDetails(),
-    accessToken: SessionHelper.getToken(),
+    accessToken: SessionHelper.GetToken() || undefined,
   },
   reducers: {
-    login(state, action) {
-      state.user = action.payload.user;
-      state.accessToken = action.payload.accessToken;
+    SetLogin: (state, action) => {
+      SessionHelper.SetToken(action.payload);
+      state.accessToken = SessionHelper.GetToken() || undefined;
     },
-    logOut(state, action) {
-      state.user = undefined;
-      state.accessToken = undefined;
-      SessionHelper.removeToken();
-      SessionHelper.removeUserDetails();
+    SetLogout: (state, action) => {
+      SessionHelper.RemoveToken();
+      SessionHelper.RemoveUserDetails();
+      state.accessToken = SessionHelper.GetToken() || undefined;
     },
   },
 });
 
-export const { login, logOut } = authSlice.actions;
-
-export default authSlice.reducer;
+export const { SetLogin, SetLogout } = AuthSlice.actions;
+export default AuthSlice.reducer;
